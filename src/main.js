@@ -2,11 +2,27 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import vuetify from './plugins/vuetify';
+import Vuelidate from 'vuelidate'
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
+import { auth } from '@/firebase'
+
+Vue.use(Vuelidate)
 Vue.config.productionTip = false
 
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        store.dispatch('sesion/iniciarSesion', user.uid)
+    } else {
+        store.dispatch('sesion/cerrarSesion', )
+    }
+})
+
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')
