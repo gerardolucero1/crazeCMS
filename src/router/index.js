@@ -41,10 +41,16 @@ const routes = [{
             import ( /* webpackChunkName: "boutiques" */ '../views/boutique/Boutiques.vue')
     },
     {
-        path: '/boutiqus/:id',
+        path: '/boutiques/:id',
         name: 'boutique',
         component: () =>
             import ( /* webpackChunkName: "boutique" */ '../views/boutique/Boutique.vue')
+    },
+    {
+        path: '/clients',
+        name: 'clients',
+        component: () =>
+            import ( /* webpackChunkName: "boutiques" */ '../views/clients/Clients.vue')
     },
     {
         path: '/user/profile',

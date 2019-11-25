@@ -1,5 +1,5 @@
 <template>
-    <v-layout justify-center text-center>
+    <v-layout v-if="boutique != null" justify-center text-center>
         <v-flex xs12 sm6 md4 lg3>
             <div>
                 <h1 class="boutique-nombre">{{ boutique.nombre }}</h1>
@@ -18,6 +18,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { db } from '@/firebase'
+
 export default {
     data(){
         return{
@@ -26,20 +28,18 @@ export default {
         }
     },
     computed: {
-        ...mapState(
-            'boutique', ['boutiques']
-        )
+
+    },
+    async mounted(){
+        let id = this.$route.params.id
+        let response = await db.collection('boutiques').doc(id).get()
+
+        if(response.exists){
+            this.boutique = response.data()  
+        }
     },
     created(){
-        let id = this.$route.params.id
 
-        this.boutique = this.boutiques.find((element) => {
-            return element.id == id
-        })
-
-        if(!this.boutique){
-            //404
-        }
     }
 }
 </script>

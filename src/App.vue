@@ -65,6 +65,18 @@
                     </v-list-item>
                 </router-link>
 
+                <router-link :to="{ name: 'clients' }" class="link">
+                    <v-list-item>
+                        <v-list-item-icon>
+                        <v-icon>person</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                        <v-list-item-title>Clientes</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </router-link>
+
                 <router-link :to="{ name: 'categorias' }" class="link">
                     <v-list-item>
                         <v-list-item-icon>

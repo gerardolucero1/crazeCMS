@@ -52,6 +52,13 @@
                             id="direccion"
                             v-model="nuevaBoutique.direccion"
                         ></v-text-field>
+
+                        <v-text-field
+                            name="logo"
+                            label="Imagen"
+                            id="logo"
+                            v-model="nuevaBoutique.logo"
+                        ></v-text-field>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
@@ -68,7 +75,8 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+import { db } from '@/firebase'
 
 export default {
     data(){
@@ -78,7 +86,9 @@ export default {
                 nombre: '',
                 direccion: '',
                 telefono: '',
-            }
+                logo: ''
+            },
+            boutiques: [],
         }
     },
     validations: {
@@ -94,11 +104,18 @@ export default {
             }
         }
     },
+    firebase: {
+        boutiques: db.collection('boutiques')
+    },
+    mounted(){
+        db.collection('boutiques').onSnapshot(response => {
+            this.boutiques = [];
+            response.forEach(doc => {
+                this.boutiques.push(doc.data())
+            })
+        })
+    },
     computed: {
-        ...mapState(
-            'boutique', ['boutiques']
-        ),
-
         erroresBoutiqueNombre: function(){
             let errores = []
             if(!this.$v.nuevaBoutique.nombre.$dirty){
@@ -140,13 +157,38 @@ export default {
     },
     methods: {
         async guardarBoutique(){
-            this.modalBoutique = false
-        }
+            try{
+                let response = await db.collection('boutiques').add(this.nuevaBoutique)
+                let addId = await db.collection('boutiques').doc(response.id).update({ id: response.id })
+            }
+            catch(e){
+
+            }
+            finally{
+                this.modalBoutique = false
+            }
+            
+        },
+
+        async obtenerBoutiques(){
+            try {
+                let boutiques = await db.collection('boutiques').get()
+                let data = boutiques.docs.map(doc => doc.data())
+
+                this.rellenarBoutiques(data)
+                
+            } catch (e) {
+            
+            }
+            finally{
+                
+            }
+        },
     }
 }
 </script>
 
-<style>
+<style scoped>
     .boutique-nombre{
         font-size: 2.4rem;
         color: white;

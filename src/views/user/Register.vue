@@ -334,7 +334,7 @@ export default {
 
         async guardarUsuario(uid){
             let usuario = {
-                    uid: uid,
+                    uid,
                     userName: 'Chaewon',
                     nombres: this.formulario_2.nombres,
                     apellidos: this.formulario_2.apellidos,
@@ -366,7 +366,7 @@ export default {
                     uid = credencial.user.uid
                 }
                 
-                await this.guardarUsuario(credencial.user.uid)
+                await this.guardarUsuario(uid)
 
                 await auth.currentUser.sendEmailVerification()
 
