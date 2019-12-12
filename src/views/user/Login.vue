@@ -1,7 +1,7 @@
 <template>
-    <v-layout justify-center align-center>
-        <v-flex xs12 sm8 md6 lg5 xl4>
-            <v-card class="elevation-6">
+    <v-layout class="bg-login" justify-center align-center>
+        <v-flex xs12 sm8 md6 lg3 xl4>
+            <v-card class="elevation-6 card-login">
                 <v-toolbar color="primary" dark flat>
                     <v-toolbar-title>
                         Ingresa tus credenciales
@@ -214,5 +214,15 @@ export default {
 </script>
 
 <style>
+    .bg-login{
+        background-image: linear-gradient(
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.6)
+        ), url('https://i.imgur.com/yK6TcpR.jpg');
+        background-size: cover;
+    }
 
+    .card-login{
+        opacity: 0.9;
+    }
 </style>

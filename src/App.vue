@@ -132,11 +132,13 @@
         <v-app-bar app color="primary accent-4" dark>
             <v-app-bar-nav-icon @click="menu = !menu"></v-app-bar-nav-icon>
 
-            <v-toolbar-title>CRAZE</v-toolbar-title>
+            <v-toolbar-title>
+                <v-img class="img-logo" src="https://i.imgur.com/DPvXcTX.png"></v-img>
+            </v-toolbar-title>
         </v-app-bar>
 
         <v-content>
-            <v-container fluid fill-height>
+            <v-container fluid fill-height style="padding: 0;">
                 <v-slide-y-transition mode="out-in">
                     <router-view></router-view>
                 </v-slide-y-transition>
@@ -225,5 +227,7 @@ export default {
 </script>
 
 <style>
-
+    .img-logo{
+        width: 115px;
+    }
 </style>

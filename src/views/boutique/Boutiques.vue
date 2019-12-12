@@ -1,7 +1,7 @@
 <template>
     <v-layout wrap>
         <v-flex xs12 sm6 lg3 v-for="(item, index) in boutiques" :key="index">
-            <v-card class="elevation-5 ma-3" :to="{ name: 'boutique', params: { id: item.id } }">
+            <v-card class="elevation-5 ma-3 boutique" :to="{ name: 'boutique', params: { id: item.id } }">
                 <v-img :src="item.logo">
                     <v-layout align-end justify-center fill-height>
                         <v-spacer></v-spacer>
@@ -12,7 +12,7 @@
                 </v-img>
             </v-card>
         </v-flex>
-        <v-flex xs12 sm6 lg3>
+        <v-flex>
             <v-dialog v-model="modalBoutique" width="500">
                 <template v-slot:activator="{ on }">
                     <v-btn  color="red lighten-2" dark v-on="on">
@@ -189,6 +189,10 @@ export default {
 </script>
 
 <style scoped>
+    .boutique{
+        height: 400px;
+    }
+
     .boutique-nombre{
         font-size: 2.4rem;
         color: white;
