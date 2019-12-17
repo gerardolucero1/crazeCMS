@@ -5,6 +5,7 @@ require('firebase/firestore')
 require('firebase/storage')
 require('firebase/functions')
 
+
 var firebaseConfig = {
     apiKey: "AIzaSyCqauZ8ks03Cjwrx6nR_oldJMXtKylASvg",
     authDomain: "craze-85d97.firebaseapp.com",

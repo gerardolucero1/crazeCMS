@@ -77,6 +77,14 @@
                             v-model="usuarioEdicion.apellidos"
                         ></v-text-field>
 
+                        <v-select v-if="boutiques.length != 0"
+                            :items="boutiques"
+                            item-text="nombre"
+                            item-value="id"
+                            label="Boutique"
+                            v-model="usuarioEdicion.boutique"
+                        ></v-select>
+
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
