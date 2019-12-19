@@ -212,12 +212,14 @@ export default {
         })
 
         if(this.boutique != null){
-            db.collection('prendas').doc(this.boutique.id).collection('ropa').onSnapshot(response => {
-                this.prendas = [];
-                response.forEach(doc => {
-                    this.prendas.push(doc.data())
-                })
-            })
+            db.collection('prendas')
+                    .where('boutique', '==', this.boutique.id)
+                    .onSnapshot(response => {
+                        this.prendas = [];
+                        response.forEach(doc => {
+                            this.prendas.push(doc.data())
+                        })
+                    })
         }
     },
     watch:{
@@ -230,9 +232,12 @@ export default {
             this.prenda.tallas = this.tallas
             this.prenda.categoria = this.categoria.nombre
             try{
-                let response = await db.collection('prendas').doc(this.boutique.id).set({id: this.boutique.id, nombre: this.boutique.nombre})
-                let prenda = await db.collection('prendas').doc(this.boutique.id).collection('ropa').add(this.prenda)
-                let addId = await db.collection('prendas').doc(this.boutique.id).collection('ropa').doc(prenda.id).update({ id: prenda.id })
+                let response = await db.collection('prendas').add(this.prenda)
+                let addId = await db.collection('prendas').doc(response.id).set({ id: response.id, boutique: this.boutique.id }, { merge: true })
+
+                // let response = await db.collection('prendas').doc(this.boutique.id).set({id: this.boutique.id, nombre: this.boutique.nombre})
+                // let prenda = await db.collection('prendas').doc(this.boutique.id).collection('ropa').add(this.prenda)
+                // let addId = await db.collection('prendas').doc(this.boutique.id).collection('ropa').doc(prenda.id).update({ id: prenda.id })
 
 
                 let canvas = this.cropper.getCroppedCanvas()
@@ -246,7 +251,7 @@ export default {
                     
                     let URL = await resultado.ref.getDownloadURL()
 
-                    await db.collection('prendas').doc(this.boutique.id).collection('ropa').doc(prenda.id).update({ foto: URL })
+                    await db.collection('prendas').doc(response.id).update({ foto: URL })
                 } catch (e) {
                     console.log(e)
                 }
@@ -289,7 +294,7 @@ export default {
         recortarImagen(){
             this.cropper = new Cropper(this.$refs.vistaPrevia, {
                 preview: this.$refs.vistaPrevia,
-                aspectRatio: 1,
+                //aspectRatio: 1,
                 modal: false,
                 guides: true,
                 sized: false,
