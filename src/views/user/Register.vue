@@ -42,7 +42,9 @@
                         name="password"
                         label="password"
                         id="password"
-                        type="password"
+                        :append-icon="showNormal ? 'visibility' : 'visibility_off'"
+                        @click:append="() => (showNormal = !showNormal)"
+                        :type="showNormal ? 'password' : 'text'"
                         v-model="formulario.password"
                     ></v-text-field>
 
@@ -52,10 +54,13 @@
                         name="password"
                         label="Repetir password"
                         id="password"
-                        type="password"
+                        :append-icon="showRepeat ? 'visibility' : 'visibility_off'"
+                        @click:append="() => (showRepeat = !showRepeat)"
+                        :type="showRepeat ? 'password' : 'text'"
                         v-model="formulario.repetirPassword"
                         @keyup.enter="siguiente(1, 'password')"
                     ></v-text-field>
+
                 </v-card-text>
                 <v-card-text>
                     <v-layout justify-end>
@@ -104,7 +109,7 @@
                         </v-flex>
                     </v-layout>
                 </v-card-text>
-            </v-card> 
+            </v-card>
         </v-flex>
     </v-layout>
 </template>
@@ -129,7 +134,9 @@ export default {
                 apellidos: '',
             },
             vista: 1,
-            metodo: 'password'
+            metodo: 'password',
+            showNormal: String,
+            showRepeat: String
         }
     },
     validations: {
@@ -313,7 +320,7 @@ export default {
                         this.registrarse()
                     }
                     break;
-            
+
                 default:
                     break;
             }
@@ -365,7 +372,7 @@ export default {
                     let credencial = await auth.createUserWithEmailAndPassword(this.formulario.email, this.formulario.password)
                     uid = credencial.user.uid
                 }
-                
+
                 await this.guardarUsuario(uid)
 
                 await auth.currentUser.sendEmailVerification()
@@ -378,7 +385,7 @@ export default {
                     case 'auth/email-already-in-use':
                         this.mostrarAdvertencia('Ya se ha registrado esta direccion de email')
                         break;
-                
+
                     default:
                         this.mostrarError('Ocurrio un error registrando tu cuenta')
                         break;
@@ -406,7 +413,7 @@ export default {
                     let credenciales = await auth.signInWithPopup(provider)
                     uid = credenciales.user.uid
                 }
-                
+
                 await this.guardarUsuario(uid)
 
                 this.$router.push({ name: 'home' })
