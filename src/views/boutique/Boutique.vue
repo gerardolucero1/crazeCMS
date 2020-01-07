@@ -31,6 +31,7 @@
                                                     accepted-file-types="image/jpeg, image/png, image/jpg"
                                                     labelFileTypeNotAllowed="Solo imagenes jpeg o png"
                                                     instant-upload="false"
+                                                    @addfile="cargarImagen"
                                                     >
                                                 </file-pond>
                                                 <img v-if="vista == 2" ref="vistaPrevia" src="" alt="" width="100%">
@@ -130,7 +131,7 @@
                                             <file-pond v-if="vista == 1"
                                                 label-idle="Selecciona una imagen"
                                                 accepted-file-types="image/jpeg, image/png, image/jpg"
-                                                labelFileTypeNotAllowed="SOlo imagenes jpeg o png"
+                                                labelFileTypeNotAllowed="Solo imagenes jpeg o png"
                                                 instant-upload="false"
                                                 @addfile="cargarImagen"
                                                 >
@@ -392,7 +393,10 @@ export default {
                 let response = await db.collection('boutiques').doc(id).get();
 
                 if(response.exists){
-                    this.boutique = this.newBoutique;
+
+                    let canvas = this.cropper.getCroppedCanvas()
+                    let imagen = canvas.toDataURL('image/png')
+                    let fotoId = uuidv4()
 
                     await db.collection('boutiques').doc(id).update(this.newBoutique)
                     .then(()=>{
@@ -401,6 +405,21 @@ export default {
                     .catch((e) => {
                         console.log("Error editando boutique:", e);
                     })
+
+                    try {
+                        let ref = storage.ref()
+                        let resultado = await ref.child('boutiques/' + this.boutique.nombre + '/' + fotoId + '.png')
+                                                 .putString(imagen, 'data_url')
+
+                        let URL = await resultado.ref.getDownloadURL();
+
+                        console.log(URL);
+
+                        await db.collection('boutiques').doc(response.id).update({ logo: URL })
+                    } catch (e) {
+                        console.log(e)
+                    }
+
                 }
             } catch(e) {
                 console.log(e)
