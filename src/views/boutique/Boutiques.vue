@@ -1,28 +1,50 @@
 <template>
     <v-layout wrap>
+
+        
         <v-flex xs12 sm6 lg3 v-for="(item, index) in boutiques" :key="index">
-            <v-card class="elevation-5 ma-3 boutique" :to="{ name: 'boutique', params: { id: item.id } }">
-                <v-img :src="item.logo">
+<!-- Boutique Card -->
+            <v-card class="elevation-5 ma-3 boutique" style="max-height:330px" :to="{ name: 'boutique', params: { id: item.id } }">
+                <v-img :src="item.logo" style="max-height:150px">
                     <v-layout align-end justify-center fill-height>
-                        <v-spacer></v-spacer>
-                        <v-card-text class="boutique-nombre">
-                            {{ item.nombre }}
-                        </v-card-text>
                     </v-layout>
                 </v-img>
+                <v-card-text class="boutique-nombre" style="color:black; font-size:27px; padding:10px 0 0 10px">
+                            {{ item.nombre }}
+                </v-card-text>
+                <v-card-text style="font-size:14px; color:black; padding:10px 0 20px 10px">
+                    {{item.direccion}}
+                </v-card-text>
+            <v-btn color="blue" text>
+                Ver
+            </v-btn>
+            <v-btn color="blue" text>
+                Llamar
+            </v-btn>
+            <v-btn color="blue" text>
+                Desactivar
+            </v-btn>
+                    
             </v-card>
+<!-- End boutique card -->
+
         </v-flex>
+        
+
+
         <v-flex>
-            <v-dialog v-model="modalBoutique" width="500">
+
+            <v-dialog v-model="modalBoutique">
                 <template v-slot:activator="{ on }">
-                    <v-btn  color="red lighten-2" dark v-on="on">
-                        Añadir nuevo
+                    <v-btn color="green lighten-2" dark v-on="on" style="margin-top:11px; padding-top:160px; padding-bottom:170px">
+                        <span>Añadir Boutique</span>
+                        <i class="fa fa-plus-circle"></i>
                     </v-btn>
                 </template>
 
                 <v-card>
                     <v-card-title class="headline grey lighten-2" primary-title>
-                        Nueva boutique
+                        Registrar Nueva Boutique
                     </v-card-title>
 
                     <v-card-text>
@@ -30,7 +52,7 @@
                             :error-messages="erroresBoutiqueNombre"
                             @blur="$v.nuevaBoutique.nombre.$touch()"
                             name="name"
-                            label="Nombre"
+                            label="Nombre de la boutique"
                             id="nombre"
                             v-model="nuevaBoutique.nombre"
                         ></v-text-field>
@@ -39,7 +61,7 @@
                             :error-messages="erroresBoutiqueTelefono"
                             @blur="$v.nuevaBoutique.telefono.$touch()"
                             name="name"
-                            label="Telefono"
+                            label="Teléfono"
                             id="telefono"
                             v-model="nuevaBoutique.telefono"
                         ></v-text-field>
@@ -48,16 +70,22 @@
                             :error-messages="erroresBoutiqueDireccion"
                             @blur="$v.nuevaBoutique.direccion.$touch()"
                             name="name"
-                            label="Direccion"
+                            label="Dirección"
                             id="direccion"
                             v-model="nuevaBoutique.direccion"
                         ></v-text-field>
 
                         <v-text-field
                             name="logo"
-                            label="Imagen"
+                            label="Imagen / Logotipo"
                             id="logo"
                             v-model="nuevaBoutique.logo"
+                        ></v-text-field>
+                        <v-text-field
+                            name="ubicacion"
+                            label="Ubicación"
+                            id="ubicacion"
+                            v-model="nuevaBoutique.ubicacion"
                         ></v-text-field>
                     </v-card-text>
                     <v-divider></v-divider>
