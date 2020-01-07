@@ -41,19 +41,23 @@
                         name="password"
                         label="password"
                         id="password"
-                        type="password"
+                        :append-icon="show ? 'visibility' : 'visibility_off'"
+                        @click:append="() => (show = !show)"
+                        :type="show ? 'password' : 'text'"
                         v-model="formulario.password"
                         :error-messages="erroresPassword"
                         @blur="$v.formulario.password.$touch()"
                         @keyup.enter="ingresar('email')"
                     ></v-text-field>
+
                 </v-card-text>
                 <v-card-text>
                     <v-layout justify-end>
+                        <v-btn >Olvidaste tu Contraseña?</v-btn>
                         <v-btn @click="ingresar('email')" :disabled="$v.formulario.$invalid" color="secondary">Ingresar</v-btn>
                     </v-layout>
                 </v-card-text>
-            </v-card>  
+            </v-card>
         </v-flex>
     </v-layout>
 </template>
@@ -70,8 +74,10 @@ export default {
             formulario: {
                 email: '',
                 password: '',
-            }
+            },
+            show: String
         }
+
     },
     validations: {
         formulario: {
@@ -199,7 +205,7 @@ export default {
                     case 'auth/wrong-password':
                         this.mostrarAdvertencia('Revisa tu email y contraseña')
                         break;
-                
+
                     default:
                         this.mostrarError('Ocurrio un error al validar la informacion')
                         break;

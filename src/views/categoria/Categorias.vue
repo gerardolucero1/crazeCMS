@@ -3,7 +3,7 @@
         <v-flex xs12 sm12 md10 lg10 x0>
             <v-card>
                 <v-card-title>
-                    Categorias - 
+                    Categorias -
                     <v-row justify="center">
                         <v-dialog v-model="modalCategoria" persistent max-width="600px">
                             <template v-slot:activator="{ on }">
@@ -21,7 +21,7 @@
                                                 <v-text-field label="Nombre" required v-model="categoria"></v-text-field>
                                             </v-col>
                                             <v-col cols="8" md="8">
-                                                <v-text-field label="Nombre" required v-model="talla"></v-text-field>
+                                                <v-text-field label="Tallas" required v-model="talla"></v-text-field>
                                             </v-col>
                                             <v-col cols="4" md="4">
                                                 <v-btn color="success" @click="agregarTalla">Agregar</v-btn>
@@ -84,7 +84,7 @@
                     loading="true"
                     :search="search"
                 >
-                    
+
                 </v-data-table>
             </v-card>
         </v-flex>

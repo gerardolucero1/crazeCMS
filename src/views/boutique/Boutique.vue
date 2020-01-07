@@ -3,18 +3,85 @@
         <v-container>
             <v-row>
                 <v-col>
-                    <v-flex >
-                        <div>
-                            <h1 class="boutique-nombre">{{ boutique.nombre }}</h1>
-                        </div>
+                    <v-flex>
+                        <v-dialog v-model="modalBoutique" persistent max-width="600px">
+                            <template v-slot:activator="{ on }">
+                                <v-btn color="primary" dark v-on="on">Editar Perfil Boutique</v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="headline grey lighten-2" primary-title>
+                                    <span class="headline">Editar</span>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    <v-container>
+                                        <v-row>
+                                            <v-col cols="12" md="12">
+                                                <v-text-field label="Nombre" required v-model="newBoutique.nombre"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="12">
+                                                <v-text-field label="Telefono" required v-model="newBoutique.telefono"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="12">
+                                                <v-text-field label="Direccion" required v-model="newBoutique.direccion"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="12">
+                                                <file-pond v-if="vista == 1"
+                                                    label-idle="Selecciona una imagen"
+                                                    accepted-file-types="image/jpeg, image/png, image/jpg"
+                                                    labelFileTypeNotAllowed="Solo imagenes jpeg o png"
+                                                    instant-upload="false"
+                                                    >
+                                                </file-pond>
+                                                <img v-if="vista == 2" ref="vistaPrevia" src="" alt="" width="100%">
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" text @click="modalBoutique = false">
+                                        Cancel
+                                    </v-btn>
+                                    <v-btn color="primary" text @click="guardarBoutique">
+                                        Guardar
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                         <v-card class="elevation-2 ma-3">
-                            <v-img :src="boutique.logo">
+                            <v-img :src="boutique.logo" min-height= "300px" max-height= "600px">
 
                             </v-img>
                         </v-card>
                         <v-btn color="success" v-for="(item, index) in boutique.categorias" :key="index">
                             {{ item.nombre }}
                         </v-btn>
+                        <div>
+                            <h1 class="boutique-nombre">{{ boutique.nombre }}</h1>
+                        </div>
+                    </v-flex>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-flex>
+                        <div>
+                            <h1>Telefono</h1>
+                        </div>
+                        <div>
+                            <h1>{{ boutique.telefono }}</h1>
+                        </div>
+                    </v-flex>
+                </v-col>
+                <v-col>
+                    <v-flex>
+                        <div>
+                            <h1>Direccion</h1>
+                        </div>
+                        <div>
+                            <h1>{{ boutique.direccion }}</h1>
+                        </div>
                     </v-flex>
                 </v-col>
             </v-row>
@@ -61,7 +128,7 @@
                                         </v-col>
                                         <v-col cols="12" md="12">
                                             <file-pond v-if="vista == 1"
-                                                label-idle="Selecciona una imagen" 
+                                                label-idle="Selecciona una imagen"
                                                 accepted-file-types="image/jpeg, image/png, image/jpg"
                                                 labelFileTypeNotAllowed="SOlo imagenes jpeg o png"
                                                 instant-upload="false"
@@ -114,7 +181,7 @@
                                         <v-icon
                                             small
                                             class="mr-2"
-                                            
+
                                         >
                                         remove_red_eye
                                         </v-icon>
@@ -148,6 +215,8 @@ import 'cropperjs/dist/cropper.css'
 
 import uuidv4 from 'uuid/v4'
 
+import Swal from 'sweetalert2'
+
 const FilePond = vueFilePond(FilePondPluginValidateType)
 
 export default {
@@ -160,8 +229,10 @@ export default {
             cropper: null,
             load: false,
             boutique: null,
+            newBoutique:null,
             //Modal
             modalPrenda: false,
+            modalBoutique: false,
             categoriaSeleccionada: null,
             categoria: '',
             categorias: [],
@@ -181,7 +252,7 @@ export default {
                 { text: 'Estatus', value: 'status', sortable: false },
             ],
             prendas: [],
-            
+
 
             //Tallas
             prenda: {
@@ -201,7 +272,8 @@ export default {
         let response = await db.collection('boutiques').doc(id).get()
 
         if(response.exists){
-            this.boutique = response.data()  
+            this.boutique = response.data();
+            this.newBoutique = response.data();
         }
 
         db.collection('categorias').onSnapshot(response => {
@@ -248,14 +320,14 @@ export default {
                     let ref = storage.ref()
                     let resultado = await ref.child('boutiques/' + this.boutique.nombre + '/prendas/' + fotoId + '.png')
                                              .putString(imagen, 'data_url')
-                    
+
                     let URL = await resultado.ref.getDownloadURL()
 
                     await db.collection('prendas').doc(response.id).update({ foto: URL })
                 } catch (e) {
                     console.log(e)
                 }
-                
+
 
                 //let addId = await db.collection('prendas').doc(response.id).update({ id: response.id })
             }
@@ -311,6 +383,41 @@ export default {
                 response.update({ publicado: item.publicado })
             } catch (e) {
                 console.log(e)
+            }
+        },
+
+        async guardarBoutique(){
+            try{
+                let id = this.$route.params.id
+                let response = await db.collection('boutiques').doc(id).get();
+
+                if(response.exists){
+                    this.boutique = this.newBoutique;
+
+                    await db.collection('boutiques').doc(id).update(this.newBoutique)
+                    .then(()=>{
+                        console.log("Boutique editada");
+                    })
+                    .catch((e) => {
+                        console.log("Error editando boutique:", e);
+                    })
+                }
+            } catch(e) {
+                console.log(e)
+            }finally{
+                Swal.fire({
+                    title: 'Boutique Editada!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                })
+                this.modalBoutique = false
+            }
+        },
+        async cargarImagenBoutique(){
+            try{
+
+            } catch (e) {
+
             }
         }
     }
