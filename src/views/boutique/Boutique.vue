@@ -249,6 +249,8 @@ export default {
                 },
                 { text: 'Marca', value: 'marca' },
                 { text: 'Tallas', value: 'tallas' },
+                { text: 'Likes', value: 'likes'},
+                { text: 'Dislikes', value: 'dislikes'},
                 { text: 'Opciones', value: 'action', sortable: false },
                 { text: 'Estatus', value: 'status', sortable: false },
             ],
@@ -380,7 +382,7 @@ export default {
 
         async actualizarEstatus(item){
             try {
-                let response = await db.collection('prendas').doc(this.boutique.id).collection('ropa').doc(item.id)
+                let response = await db.collection('prendas').doc(item.id)
                 response.update({ publicado: item.publicado })
             } catch (e) {
                 console.log(e)
@@ -393,11 +395,6 @@ export default {
                 let response = await db.collection('boutiques').doc(id).get();
 
                 if(response.exists){
-
-                    let canvas = this.cropper.getCroppedCanvas()
-                    let imagen = canvas.toDataURL('image/png')
-                    let fotoId = uuidv4()
-
                     await db.collection('boutiques').doc(id).update(this.newBoutique)
                     .then(()=>{
                         console.log("Boutique editada");
@@ -407,6 +404,10 @@ export default {
                     })
 
                     try {
+                        let canvas = this.cropper.getCroppedCanvas()
+                        let imagen = canvas.toDataURL('image/png')
+                        let fotoId = uuidv4()
+
                         let ref = storage.ref()
                         let resultado = await ref.child('boutiques/' + this.boutique.nombre + '/' + fotoId + '.png')
                                                  .putString(imagen, 'data_url')
