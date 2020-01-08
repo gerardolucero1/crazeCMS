@@ -1,5 +1,5 @@
 <style lang="">
-    
+
 </style>
 
 <template>
@@ -76,7 +76,7 @@
                                                 </v-col>
                                                 <v-col cols="12" md="12">
                                                     <file-pond v-if="vista == 1"
-                                                        label-idle="Selecciona una imagen" 
+                                                        label-idle="Selecciona una imagen"
                                                         accepted-file-types="image/jpeg, image/png, image/jpg"
                                                         labelFileTypeNotAllowed="SOlo imagenes jpeg o png"
                                                         instant-upload="false"
@@ -108,7 +108,7 @@
                             Eliminar
                         </v-btn>
                         </v-card-actions>
-                    </v-card>              
+                    </v-card>
                 </v-col>
             </v-row>
         </v-container>
@@ -151,7 +151,7 @@ export default {
     async mounted() {
         let id = this.$route.params.id
 
-        await db.collection('prendas').doc(this.sesion.usuario.boutique).collection('ropa').doc(id).onSnapshot(response => {
+        await db.collection('prendas').doc(id).onSnapshot(response => {
             this.prenda = response.data()
             this.prendaEdicion = JSON.parse( JSON.stringify( this.prenda ) )
 
@@ -167,7 +167,7 @@ export default {
                 this.categorias.push(doc.data())
             })
         })
-        
+
     },
     computed: {
         ...mapState(['sesion'])
@@ -182,7 +182,7 @@ export default {
             let idPrenda = this.$route.params.id
             try {
                 let response = await db.collection('prendas').doc(this.sesion.usuario.boutique).collection('ropa').doc(idPrenda).set(this.prendaEdicion, {merge: true})
-                
+
                 if(this.cropper){
                     let canvas = this.cropper.getCroppedCanvas()
                     let imagen = canvas.toDataURL('image/png')
@@ -192,7 +192,7 @@ export default {
                         let ref = storage.ref()
                         let resultado = await ref.child('boutiques/' + this.boutique.nombre + '/prendas/' + fotoId + '.png')
                                                 .putString(imagen, 'data_url')
-                        
+
                         let URL = await resultado.ref.getDownloadURL()
 
                         await db.collection('prendas').doc(this.sesion.usuario.boutique).collection('ropa').doc(idPrenda).update({ foto: URL })
@@ -200,7 +200,7 @@ export default {
                         console.log(e)
                     }
                 }
-                
+
                 this.prendaEdicion = ''
                 this.editarPrenda = false
             } catch (e) {
