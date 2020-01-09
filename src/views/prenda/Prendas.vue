@@ -33,6 +33,32 @@
                         <div>{{ prenda.descripcion }}</div>
                         </v-card-text>
 
+                        <v-card-text class="text--primary">
+                        <div>
+                            Likes : {{prenda.likes}}
+                            <v-data-table
+                                :headers="headers"
+                                :items="listaLikes"
+                                :items-per-page="5"
+                                class="elevation-1"
+                                loading="true"
+                                :search="search"
+                            >
+                            </v-data-table>
+                        </div>
+                        <div>
+                            Dislikes : {{prenda.dislikes}}
+                            <v-data-table
+                                :headers="headers"
+                                :items="listaDislikes"
+                                :items-per-page="5"
+                                class="elevation-1"
+                                loading="true"
+                                :search="search"
+                            >
+                            </v-data-table>
+                        </div>
+                        </v-card-text>
                         <v-card-actions>
                         <template>
                             <v-dialog v-model="editarPrenda" persistent max-width="600px">
@@ -146,6 +172,18 @@ export default {
             tallas: [],
 
             boutique: '',
+
+            listaLikes: [],
+            listDislikes: [],
+
+            headers: [
+                {
+                    text: 'Nombre',
+                    align: 'left',
+                    sortable: false,
+                    value: 'nombres',
+                }
+            ],
         }
     },
     async mounted() {
@@ -157,15 +195,39 @@ export default {
 
         })
 
-        await db.collection('boutiques').doc(this.sesion.usuario.boutique).onSnapshot(response => {
-            this.boutique = response.data()
-        })
+        //await db.collection('boutiques').doc(this.sesion.usuario.boutique).onSnapshot(response => {
+        //    this.boutique = response.data()
+        //})
 
         await db.collection('categorias').onSnapshot(response => {
             this.categorias = [];
             response.forEach(doc => {
                 this.categorias.push(doc.data())
             })
+        })
+
+
+        await db.collectionGroup('like').where('id','==', id).get().then(snapshot=>{
+            this.listaLikes = [];
+            snapshot.forEach(doc => {
+                db.collection('usuarios').doc(doc.data().user).get().then(user=>{
+                    this.listaLikes.push(user.data());
+                })
+
+            });
+        })
+
+        await db.collectionGroup('dislike').where('id','==', id).get().then(snapshot=>{
+            this.listaDislikes = [];
+            snapshot.forEach(doc => {
+                db.collection('usuarios').doc(doc.data().user).get().then(user=>{
+                    this.listaDislikes.push(user.data());
+                })
+                .catch(e=>{
+
+                })
+
+            });
         })
 
     },
@@ -181,7 +243,7 @@ export default {
         async guardarPrenda(){
             let idPrenda = this.$route.params.id
             try {
-                let response = await db.collection('prendas').doc(this.sesion.usuario.boutique).collection('ropa').doc(idPrenda).set(this.prendaEdicion, {merge: true})
+                let response = await db.collection('prendas').doc(idPrenda).set(this.prendaEdicion, {merge: true})
 
                 if(this.cropper){
                     let canvas = this.cropper.getCroppedCanvas()
