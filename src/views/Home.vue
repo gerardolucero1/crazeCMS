@@ -18,6 +18,18 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
+                <v-col>
+                    <v-card
+                    class="mx-auto"
+                    max-width="400"
+                    >
+                        <v-card-title>Total de vistas</v-card-title>
+
+                        <v-card-text class="headline text-center font-weight-bold">
+                          30
+                        </v-card-text>
+                    </v-card>
+                </v-col>
             </v-row>
             <v-row>
                 <v-col>
