@@ -167,14 +167,25 @@
                                 single-line
                                 hide-details
                             ></v-text-field>
+                            <v-col>
+                                <v-select
+                                :items="categorias"
+                                item-text="nombre"
+                                item-value="nombre"
+                                label="Categoria"
+                                v-model="categoria"
+                                @change='changeCategoria'
+                                ></v-select>
+                            </v-col>
                         </v-card-title>
                         <v-data-table
                             :headers="headers"
-                            :items="prendas"
+                            :items="prendasFiltradas"
                             :items-per-page="5"
                             class="elevation-1"
                             loading="true"
                             :search="search"
+
                         >
                             <template v-slot:item.action="{ item }">
                                 <v-flex>
@@ -268,7 +279,15 @@ export default {
         }
     },
     computed: {
-
+        prendasFiltradas() {
+            console.log(this.categoria)
+            if (this.categoria === 'ninguna'){
+              return this.prendas
+            }
+            return this.prendas.filter((i) => {
+              return !this.categoria || (i.categoria === this.categoria);
+            })
+        }
     },
     async mounted(){
         let id = this.$route.params.id
@@ -280,8 +299,9 @@ export default {
         }
 
         db.collection('categorias').onSnapshot(response => {
-            this.categorias = [];
+            this.categorias = [{id:"",nombre:"ninguna"}];
             response.forEach(doc => {
+                //console.log(doc.data())
                 this.categorias.push(doc.data())
             })
         })
@@ -298,9 +318,9 @@ export default {
         }
     },
     watch:{
-        categoriaSeleccionada(){
-            this.categoria = this.categorias.find(element => element.id == this.categoriaSeleccionada)
-        }
+        //categoriaSeleccionada(){
+        //    this.categoria = this.categorias.find(element => element.id == this.categoriaSeleccionada)
+        //}
     },
     methods: {
         async guardarPrenda(){
@@ -439,7 +459,14 @@ export default {
             } catch (e) {
 
             }
+        },
+
+        changeCategoria(val){
+            console.log("categoria actual :")
+            console.log(val)
         }
+
+
     }
 }
 </script>
