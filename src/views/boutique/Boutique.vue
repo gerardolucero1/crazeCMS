@@ -174,7 +174,6 @@
                                 item-value="nombre"
                                 label="Categoria"
                                 v-model="categoria"
-                                @change='changeCategoria'
                                 ></v-select>
                             </v-col>
                         </v-card-title>
@@ -280,7 +279,7 @@ export default {
     },
     computed: {
         prendasFiltradas() {
-            console.log(this.categoria)
+            //console.log(this.categoria)
             if (this.categoria === 'ninguna'){
               return this.prendas
             }
@@ -452,21 +451,7 @@ export default {
                 })
                 this.modalBoutique = false
             }
-        },
-        async cargarImagenBoutique(){
-            try{
-
-            } catch (e) {
-
-            }
-        },
-
-        changeCategoria(val){
-            console.log("categoria actual :")
-            console.log(val)
         }
-
-
     }
 }
 </script>
