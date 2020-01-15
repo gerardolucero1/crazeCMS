@@ -42,7 +42,7 @@
                                 :items-per-page="5"
                                 class="elevation-1"
                                 loading="true"
-                                :search="search"
+
                             >
                             </v-data-table>
                         </div>
@@ -54,7 +54,7 @@
                                 :items-per-page="5"
                                 class="elevation-1"
                                 loading="true"
-                                :search="search"
+
                             >
                             </v-data-table>
                         </div>
@@ -152,6 +152,7 @@ import 'filepond/dist/filepond.min.css'
 import Cropper from 'cropperjs/dist/cropper'
 import 'cropperjs/dist/cropper.css'
 
+import moment from 'moment'
 import uuidv4 from 'uuid/v4'
 
 const FilePond = vueFilePond(FilePondPluginValidateType)
@@ -174,7 +175,7 @@ export default {
             boutique: '',
 
             listaLikes: [],
-            listDislikes: [],
+            listaDislikes: [],
 
             headers: [
                 {
@@ -182,6 +183,12 @@ export default {
                     align: 'left',
                     sortable: false,
                     value: 'nombres',
+                },
+                {
+                    text: 'Fecha',
+                    align: 'left',
+                    sortable: false,
+                    value: 'timeOf'
                 }
             ],
         }
@@ -211,7 +218,9 @@ export default {
             this.listaLikes = [];
             snapshot.forEach(doc => {
                 db.collection('usuarios').doc(doc.data().user).get().then(user=>{
-                    this.listaLikes.push(user.data());
+                    let buffer = user.data();
+                    buffer.timeOf = moment(doc.data().timeOf.toDate(), "DD-MM-YYYY"); //dateFormat(doc.data().timeOf.toDate(), "dd, mmmm, yyyy, h:MM:ss TT")
+                    this.listaLikes.push(buffer);
                 })
 
             });
@@ -221,6 +230,8 @@ export default {
             this.listaDislikes = [];
             snapshot.forEach(doc => {
                 db.collection('usuarios').doc(doc.data().user).get().then(user=>{
+                    let buffer = user.data();
+                    //buffer.timeOf = dateFormat(doc.data().timeOf.toDate(), "d,m,y h:MM:ss TT")
                     this.listaDislikes.push(user.data());
                 })
                 .catch(e=>{
