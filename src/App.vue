@@ -29,17 +29,6 @@
 
             <v-list dense nav>
                 <slot v-if="usuario != null">
-                <router-link :to="{ name: 'profile' }" class="link">
-                    <v-list-item>
-                    <v-list-item-icon>
-                        <v-icon>account_circle</v-icon>
-                    </v-list-item-icon>
-
-                    <v-list-item-content>
-                        <v-list-item-title>Perfil</v-list-item-title>
-                    </v-list-item-content>
-                    </v-list-item>
-                </router-link>
 
                 <router-link :to="{ name: 'home' }" class="link">
                     <v-list-item>
@@ -53,6 +42,18 @@
                     </v-list-item>
                 </router-link>
                 
+                <router-link :to="{ name: 'profile' }" class="link">
+                    <v-list-item>
+                    <v-list-item-icon>
+                        <v-icon>account_circle</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title>Perfil</v-list-item-title>
+                    </v-list-item-content>
+                    </v-list-item>
+                </router-link>
+
                 <router-link :to="{ name: 'boutiques' }" class="link">
                     <v-list-item>
                         <v-list-item-icon>
@@ -97,6 +98,10 @@
                     <v-list-item-content>
                     <v-list-item-title>Salir</v-list-item-title>
                     </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item style="font-style:; color:#949494;">
+                    <p>Plan actual: <strong>Plata</strong><br> <span>Mejorar Beneficios <i class="fa fa-arrow-alt-circle-up" style="color:green"></i></span></p>
                 </v-list-item>
                 </slot>
 

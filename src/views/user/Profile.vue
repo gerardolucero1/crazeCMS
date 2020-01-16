@@ -9,7 +9,6 @@
                 <div class="ma-2">
                     {{ usuario.descripcion }}
                 </div>
-                <a :href="usuario.biografia" target="_blank" class="ma-2 link">Biografia</a>
             </v-card-text>
         </v-card>
     </v-layout>

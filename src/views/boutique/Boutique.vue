@@ -6,7 +6,7 @@
                     <v-flex>
                         <v-dialog v-model="modalBoutique" persistent max-width="600px">
                             <template v-slot:activator="{ on }">
-                                <v-btn color="primary" dark v-on="on">Editar Perfil Boutique</v-btn>
+                                <v-btn style="margin-left:-100px" color="blue" dark v-on="on">Editar Perfil Boutique</v-btn>
                             </template>
                             <v-card>
                                 <v-card-title class="headline grey lighten-2" primary-title>
@@ -50,47 +50,34 @@
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
-                        <v-card class="elevation-2 ma-3">
-                            <v-img :src="boutique.logo" min-height= "300px" max-height= "600px">
 
-                            </v-img>
-                        </v-card>
                         <v-btn color="success" v-for="(item, index) in boutique.categorias" :key="index">
                             {{ item.nombre }}
                         </v-btn>
                         <div>
-                            <h1 class="boutique-nombre">{{ boutique.nombre }}</h1>
+                            
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-4"><v-img :src="boutique.logo" style="width:100%; margin-top:-50px">
+                            </v-img></div> 
+                            <div class="col-md-4">
+                                <h1 class="text-left">{{ boutique.nombre }}</h1>
+                                <h4 class="text-left">Teléfono: <span style="font-weight:normal">{{ boutique.telefono }}</span></h4>
+                                <h4 class="text-left">Dirección: <span style="font-weight:normal">{{ boutique.direccion }}</span></h4>
+                                
+                            </div> 
+                        
+                        </div> 
                     </v-flex>
                 </v-col>
             </v-row>
-            <v-row>
-                <v-col>
-                    <v-flex>
-                        <div>
-                            <h1>Telefono</h1>
-                        </div>
-                        <div>
-                            <h1>{{ boutique.telefono }}</h1>
-                        </div>
-                    </v-flex>
-                </v-col>
-                <v-col>
-                    <v-flex>
-                        <div>
-                            <h1>Direccion</h1>
-                        </div>
-                        <div>
-                            <h1>{{ boutique.direccion }}</h1>
-                        </div>
-                    </v-flex>
-                </v-col>
-            </v-row>
+            
             <v-row>
                 <v-col>
                     <v-dialog v-model="modalPrenda" persistent max-width="600px">
                         <template v-slot:activator="{ on }">
-                            <v-btn color="primary" dark v-on="on">Agregar prenda</v-btn>
+                            <v-btn style="margin-left:-800px" color="green" dark v-on="on">Agregar prenda <i class="fa fa-plus"></i></v-btn>
                         </template>
                         <v-card>
                             <v-card-title class="headline grey lighten-2" primary-title>

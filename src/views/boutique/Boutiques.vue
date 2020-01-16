@@ -1,22 +1,38 @@
 <template>
     <v-layout wrap>
         <v-flex xs12 sm6 lg3 v-for="(item, index) in boutiques" :key="index">
-            <v-card class="elevation-5 ma-3 boutique" :to="{ name: 'boutique', params: { id: item.id } }">
-                <v-img :src="item.logo">
+            <v-card class="elevation-5 ma-3 boutique" >
+                <v-img :src="item.logo" style="height:200px">
                     <v-layout align-end justify-center fill-height>
                         <v-spacer></v-spacer>
-                        <v-card-text class="boutique-nombre">
-                            {{ item.nombre }}
-                        </v-card-text>
                     </v-layout>
                 </v-img>
+                <v-card-text class="boutique-nombre" style="font-size:25px; margin:0; padding:10px">
+                    {{ item.nombre }}
+                </v-card-text>
+                <p style="padding:0 10px; font-size:14px">{{ item.direccion }}</p>
+                <div class="row" style="color:#AEAEAE; padding:0px 10px; font-size:14px">
+                    <div class="col-md-4 text-center">
+                        <p><i class="fa fa-tshirt"></i> 5</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p><i class="fa fa-heart"></i> 1,582</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p><i class="fa fa-thumbs-down"></i> 586</p>
+                    </div>
+                </div> 
+                <div class="text-center" style="width:100%; position:absolute; bottom:15px;">
+                     <v-btn color="blue" :to="{ name: 'boutique', params: { id: item.id } }" dark v-on="on">Ver Boutique</v-btn>
+                </div>
+                
             </v-card>
         </v-flex>
         <v-flex>
             <v-dialog v-model="modalBoutique" width="500">
                 <template v-slot:activator="{ on }">
-                    <v-btn  color="red lighten-2" dark v-on="on">
-                        Añadir nuevo
+                    <v-btn  color="green lighten-2" dark v-on="on" style="margin-left:20px">
+                       Registrar Boutique
                     </v-btn>
                 </template>
 
