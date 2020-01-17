@@ -136,8 +136,8 @@ export default {
             publicadas : [],
             listaLikes : [],
             listaDislikes : [],
-            totalLikes : 13,
-            totalDislikes : 17,
+            totalLikes : 0,
+            totalDislikes : 0,
 
 
             headers: [
@@ -171,8 +171,8 @@ export default {
         ...mapState(['sesion'])
     },
     async mounted() {
-    this.prendas = [{name: Sueter, likes: 3, dislikes: 2},{name: Pantalon, likes: 10, dislikes: 5}, {name: Camisa, likes: 0, dislikes: 10}];
-    this.publicadas = [{name: Sueter, likes: 3, dislikes: 2},{name: Pantalon, likes: 10, dislikes: 5}];
+          this.prendas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}, {name: 'Camisa', likes: 0, dislikes: 10}];
+          this.publicadas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}];
 //        let boutiqueId = 'bzTPm28OeUu9NghDhJln'//this.sesion.user.boutique
 //        this.listaLikes = []
 //        this.listaDislikes = []
