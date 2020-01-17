@@ -10,12 +10,12 @@ const routes = [{
         name: 'home',
         component: Home
     },
-    {
-        path: '/register',
-        name: 'register',
-        component: () =>
-            import ( /* webpackChunkName: "register" */ '../views/user/Register.vue')
-    },
+    //{
+    //    path: '/register',
+    //     name: 'register',
+    //     component: () =>
+    //         import ( /* webpackChunkName: "register" */ '../views/user/Register.vue')
+    // },
     {
         path: '/verification-email',
         name: 'verificacion-email',

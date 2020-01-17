@@ -52,7 +52,7 @@
                     </v-list-item-content>
                     </v-list-item>
                 </router-link>
-                
+
                 <router-link :to="{ name: 'boutiques' }" class="link">
                     <v-list-item>
                         <v-list-item-icon>
@@ -113,17 +113,6 @@
                     </v-list-item>
                 </router-link>
 
-                <router-link to="/register" class="link">
-                    <v-list-item>
-                        <v-list-item-icon>
-                        <v-icon>flag</v-icon>
-                        </v-list-item-icon>
-
-                        <v-list-item-content>
-                        <v-list-item-title>Registro</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </router-link>
                 </slot>
             </v-list>
         </v-navigation-drawer>
@@ -146,7 +135,7 @@
         </v-content>
 
         <v-snackbar
-            v-model="notificacion.visible" 
+            v-model="notificacion.visible"
             :color="notificacion.color"
             multi-line
             top
@@ -177,7 +166,7 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
-        
+
         <Footer></Footer>
     </v-app>
 </template>
