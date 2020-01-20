@@ -171,35 +171,36 @@ export default {
         ...mapState(['sesion'])
     },
     async mounted() {
-          this.prendas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}, {name: 'Camisa', likes: 0, dislikes: 10}];
-          this.publicadas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}];
-//        let boutiqueId = 'bzTPm28OeUu9NghDhJln'//this.sesion.user.boutique
-//        this.listaLikes = []
-//        this.listaDislikes = []
-//        this.totalLikes = 0
-//        this.totalDislikes = 0
-//
-//        await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
-//            snapshot.forEach(doc=>{
-//                this.prendas.push(doc.data())
-//                if(doc.data().publicado){
-//                    this.publicadas.push(doc.data())
-//                }
-//
-//                db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
-//                    this.listaLikes.push({name: doc.data().name, likes: snapshot.size})
-//                })
-//                db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
-//                    this.listaDislikes.push({name: doc.data().name, dislikes: snapshot.size})
-//                })
-//            })
-//        })
-//        for (let i = 0; i<this.listaLikes.length; i++){
-//          this.totalLikes+=this.listaLikes[i].likes;
-//        }
-//        for (let i = 0; i<this.listaDislikes.length; i++){
-//          this.totalDislikes+=this.listaDislikes[i].dislikes;
-//        }
+          //this.prendas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}, {name: 'Camisa', likes: 0, dislikes: 10}];
+          //this.publicadas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}];
+        console.log(this.sesion.usuario.boutique)
+        let boutiqueId = this.sesion.usuario.boutique
+        this.listaLikes = []
+        this.listaDislikes = []
+        this.totalLikes = 0
+        this.totalDislikes = 0
+
+        await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
+            snapshot.forEach(doc=>{
+                this.prendas.push(doc.data())
+                if(doc.data().publicado){
+                    this.publicadas.push(doc.data())
+                }
+
+                db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
+                    this.listaLikes.push({name: doc.data().name, likes: snapshot.size})
+                })
+                db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
+                    this.listaDislikes.push({name: doc.data().name, dislikes: snapshot.size})
+                })
+            })
+        })
+        for (let i = 0; i<this.listaLikes.length; i++){
+          this.totalLikes+=this.listaLikes[i].likes;
+        }
+        for (let i = 0; i<this.listaDislikes.length; i++){
+          this.totalDislikes+=this.listaDislikes[i].dislikes;
+        }
     }
 }
 </script>

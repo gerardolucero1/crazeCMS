@@ -286,7 +286,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { auth, firebase, db , storage } from '@/firebase'
+import { auth, firebase, db , storage , secondAuth} from '@/firebase'
 
 import vueFilePond from 'vue-filepond'
 import FilePondPluginValidateType from 'filepond-plugin-file-validate-type'
@@ -701,23 +701,19 @@ export default {
 
         async guardarUsuario(uid){
             let usuario = {
-                    uid,
-                    userName: 'Chaewon',
+                    uid: uid,
                     nombres: this.formulario.nombres,
                     apellidos: this.formulario.apellidos,
-                    //fechaNacimiento: new Date(this.fechaNacimiento),
-                    sexo: 'Femenino',
-                    descripcion: 'Descripcion',
-                    biografia: 'https://drama.fandom.com/es/wiki/Lee_Jin_Sol',
-                    fotoPerfil: 'https://hallyumusic.com/wp-content/uploads/2018/01/APRIL-Chaewon-The-Ruby-Cover.jpg',
-                    boutique: this.boutique.id
+                    fotoPerfil: this.boutique.logo,
+                    boutique: this.boutique.id,
+                    tipo: 1
                 }
 
                 await db.collection('usuarios')
                     .doc(usuario.uid)
                     .set(usuario)
 
-                this.actualizarUsuario(usuario)
+                //this.actualizarUsuario(usuario)
                 this.mostrarExito(this.saludo)
         },
 
@@ -725,14 +721,16 @@ export default {
             try{
                 this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
 
-                let credencial = await auth.createUserWithEmailAndPassword(this.formulario.email, this.formulario.password)
+                let credencial = await secondAuth.createUserWithEmailAndPassword(this.formulario.email, this.formulario.password)
                 let uid = credencial.user.uid
 
                 await this.guardarUsuario(uid)
 
-                await auth.currentUser.sendEmailVerification()
+                await secondAuth.currentUser.sendEmailVerification()
 
-                this.$router.push({ name: 'verificacion-email' })
+                await secondAuth.signOut();
+
+                //this.$router.push({ name: 'verificacion-email' })
             }
             catch(error){
                 console.log(error)
@@ -748,6 +746,7 @@ export default {
             }
             finally{
                 this.ocultarOcupado()
+                this.modalRegistro = false
             }
         },
     }
