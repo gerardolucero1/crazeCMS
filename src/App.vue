@@ -52,43 +52,43 @@
                     </v-list-item-content>
                     </v-list-item>
                 </router-link>
+                    <slot v-if="usuario.tipo == 0">
+                        <router-link :to="{ name: 'boutiques' }" class="link">
+                            <v-list-item>
+                                <v-list-item-icon>
+                                <v-icon>store</v-icon>
+                                </v-list-item-icon>
 
-                <router-link :to="{ name: 'boutiques' }" class="link">
-                    <v-list-item>
-                        <v-list-item-icon>
-                        <v-icon>store</v-icon>
-                        </v-list-item-icon>
+                                <v-list-item-content>
+                                <v-list-item-title>Boutiques</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </router-link>
 
-                        <v-list-item-content>
-                        <v-list-item-title>Boutiques</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </router-link>
+                        <!--router-link :to="{ name: 'clients' }" class="link">
+                            <v-list-item>
+                                <v-list-item-icon>
+                                <v-icon>person</v-icon>
+                                </v-list-item-icon>
 
-                <router-link :to="{ name: 'clients' }" class="link">
-                    <v-list-item>
-                        <v-list-item-icon>
-                        <v-icon>person</v-icon>
-                        </v-list-item-icon>
+                                <v-list-item-content>
+                                <v-list-item-title>Clientes</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </router-link-->
 
-                        <v-list-item-content>
-                        <v-list-item-title>Clientes</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </router-link>
+                        <router-link :to="{ name: 'categorias' }" class="link">
+                            <v-list-item>
+                                <v-list-item-icon>
+                                <v-icon>loyalty</v-icon>
+                                </v-list-item-icon>
 
-                <router-link :to="{ name: 'categorias' }" class="link">
-                    <v-list-item>
-                        <v-list-item-icon>
-                        <v-icon>loyalty</v-icon>
-                        </v-list-item-icon>
-
-                        <v-list-item-content>
-                        <v-list-item-title>Categorias</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </router-link>
-
+                                <v-list-item-content>
+                                <v-list-item-title>Categorias</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </router-link>
+                    </slot>
                 <v-list-item @click="salir">
                     <v-list-item-icon>
                     <v-icon>arrow_back</v-icon>

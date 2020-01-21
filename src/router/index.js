@@ -8,7 +8,10 @@ Vue.use(VueRouter)
 const routes = [{
         path: '/home',
         name: 'home',
-        component: Home
+        component: Home,
+        meta: {
+            autenticado: true,
+        }
     },
     //{
     //    path: '/register',
@@ -32,31 +35,46 @@ const routes = [{
         path: '/categorias',
         name: 'categorias',
         component: () =>
-            import ( /* webpackChunkName: "categorias" */ '../views/categoria/Categorias.vue')
+            import ( /* webpackChunkName: "categorias" */ '../views/categoria/Categorias.vue'),
+        meta: {
+            autenticado: true,
+        }
     },
     {
         path: '/boutiques',
         name: 'boutiques',
         component: () =>
-            import ( /* webpackChunkName: "boutiques" */ '../views/boutique/Boutiques.vue')
+            import ( /* webpackChunkName: "boutiques" */ '../views/boutique/Boutiques.vue'),
+        meta: {
+            autenticado: true,
+        }
     },
     {
         path: '/boutiques/:id',
         name: 'boutique',
         component: () =>
-            import ( /* webpackChunkName: "boutique" */ '../views/boutique/Boutique.vue')
+            import ( /* webpackChunkName: "boutique" */ '../views/boutique/Boutique.vue'),
+        meta: {
+            autenticado: true,
+        }
     },
     {
         path: '/boutiques/prendas/:id',
         name: 'prendas',
         component: () =>
-            import ( /* webpackChunkName: "boutique" */ '../views/prenda/Prendas.vue')
+            import ( /* webpackChunkName: "boutique" */ '../views/prenda/Prendas.vue'),
+        meta: {
+            autenticado: true,
+        }
     },
     {
         path: '/clients',
         name: 'clients',
         component: () =>
-            import ( /* webpackChunkName: "boutiques" */ '../views/clients/Clients.vue')
+            import ( /* webpackChunkName: "boutiques" */ '../views/clients/Clients.vue'),
+        meta: {
+            autenticado: true,
+        }
     },
     {
         path: '/user/profile',
@@ -84,6 +102,19 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     let user = auth.currentUser
 
+    // if (to.meta.autenticado) {
+    //     if (user != '') {
+    //         if (user.providerData[0].providerId == 'password' && !user.emailVerified) {
+    //             next({ name: 'verificacion-email' })
+    //         } else {
+    //             next()
+    //         }
+    //     } else {
+    //         next({ name: 'login' })
+    //     }
+    // } else {
+    //     next()
+    // }
     if (to.matched.some(record => record.meta.autenticado)) {
         if (user) {
             if (user.providerData[0].providerId == 'password' && !user.emailVerified) {
