@@ -712,9 +712,6 @@ export default {
                 await db.collection('usuarios')
                     .doc(usuario.uid)
                     .set(usuario)
-
-                //this.actualizarUsuario(usuario)
-                this.mostrarExito(this.saludo)
         },
 
         async registrarEmail(){
