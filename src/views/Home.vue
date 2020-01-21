@@ -14,7 +14,7 @@
                         <v-card-title>Total de prendas subidas</v-card-title>
 
                         <v-card-text class="headline text-center font-weight-bold">
-                          3
+                          {{ prendas.length }}
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -26,7 +26,7 @@
                         <v-card-title>Total de vistas</v-card-title>
 
                         <v-card-text class="headline text-center font-weight-bold">
-                          30
+                          {{ totalVistas }}
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -40,7 +40,7 @@
                         <v-card-title>Likes esta semana</v-card-title>
 
                         <v-card-text class="headline text-center font-weight-bold">
-                          13
+                          {{ totalLikes }}
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -52,7 +52,7 @@
                         <v-card-title>Dislikes esta semana</v-card-title>
 
                         <v-card-text class="headline text-center font-weight-bold">
-                          17
+                          {{ totalDislikes }}
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -138,6 +138,7 @@ export default {
             listaDislikes : [],
             totalLikes : 0,
             totalDislikes : 0,
+            totalVistas: 0,
 
 
             headers: [
@@ -180,27 +181,36 @@ export default {
         this.totalLikes = 0
         this.totalDislikes = 0
 
-        await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
-            snapshot.forEach(doc=>{
-                this.prendas.push(doc.data())
-                if(doc.data().publicado){
-                    this.publicadas.push(doc.data())
-                }
+        try{
+            await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
+                snapshot.forEach(doc=>{
+                    this.prendas.push(doc.data())
+                    if(doc.data().publicado){
+                        this.publicadas.push(doc.data())
+                    }
 
-                db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
-                    this.listaLikes.push({name: doc.data().name, likes: snapshot.size})
-                })
-                db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
-                    this.listaDislikes.push({name: doc.data().name, dislikes: snapshot.size})
+                    db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
+                        this.listaLikes.push({name: doc.data().nombre, likes: snapshot.size})
+                        this.totalLikes+=snapshot.size
+                        this.totalVistas+=snapshot.size
+                    })
+
+
+                    db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
+                        this.listaDislikes.push({name: doc.data().nombre, dislikes: snapshot.size})
+                        this.totalDislikes+=snapshot.size
+                        this.totalVistas+=snapshot.size
+                    })
                 })
             })
-        })
-        for (let i = 0; i<this.listaLikes.length; i++){
-          this.totalLikes+=this.listaLikes[i].likes;
         }
-        for (let i = 0; i<this.listaDislikes.length; i++){
-          this.totalDislikes+=this.listaDislikes[i].dislikes;
+        catch(e){
+         console.log(e.message)
         }
+        finally{
+
+        }
+
     }
 }
 </script>
