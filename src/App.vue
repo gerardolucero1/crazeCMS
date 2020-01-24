@@ -89,6 +89,19 @@
                             </v-list-item>
                         </router-link>
                     </slot>
+                    <slot v-if="usuario.tipo > 0">
+                        <router-link :to="{ name: 'boutique', params: { id: usuario.boutique } }" class="link">
+                            <v-list-item>
+                                <v-list-item-icon>
+                                <v-icon>store</v-icon>
+                                </v-list-item-icon>
+
+                                <v-list-item-content>
+                                <v-list-item-title>Boutique</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </router-link>
+                    </slot>
                 <v-list-item @click="salir">
                     <v-list-item-icon>
                     <v-icon>arrow_back</v-icon>
