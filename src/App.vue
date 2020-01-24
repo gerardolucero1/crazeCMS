@@ -101,6 +101,18 @@
                                 </v-list-item-content>
                             </v-list-item>
                         </router-link>
+
+                        <router-link :to="{ name: 'caja'}" class="link">
+                            <v-list-item>
+                                <v-list-item-icon>
+                                <v-icon>store</v-icon>
+                                </v-list-item-icon>
+
+                                <v-list-item-content>
+                                <v-list-item-title>Caja</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </router-link>
                     </slot>
                 <v-list-item @click="salir">
                     <v-list-item-icon>

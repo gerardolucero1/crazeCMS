@@ -86,6 +86,15 @@ const routes = [{
         }
     },
     {
+        path: '/user/caja',
+        name: 'caja',
+        component: () =>
+            import ( /* webpackChunkName: "profile" */ '../views/user/caja.vue'),
+        meta: {
+            autenticado: true,
+        }
+    },
+    {
         path: '/about',
         name: 'about',
         component: () =>
