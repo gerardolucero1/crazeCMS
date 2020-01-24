@@ -50,7 +50,7 @@
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
-                        <v-dialog v-model="modalRegistro" persistent max-width="600px">
+                        <v-dialog v-model="modalRegistro" persistent max-width="600px" v-if="usuario.tipo == 0">
                             <template v-slot:activator="{ on }">
                                 <v-btn color="primary" dark v-on="on">Registrar Usuario</v-btn>
                             </template>
@@ -121,6 +121,7 @@
                             </v-card-actions>
                             </v-card>
                         </v-dialog>
+
                         <v-card class="elevation-2 ma-3">
                             <v-img :src="boutique.logo" min-height= "300px" max-height= "600px">
 
@@ -285,7 +286,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import { auth, firebase, db , storage , secondAuth} from '@/firebase'
 
 import vueFilePond from 'vue-filepond'
@@ -301,7 +302,7 @@ import Swal from 'sweetalert2'
 
 import { required, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 import { nombreCompuesto } from '@/utilities/validations'
-import { mapMutations, mapGetters } from 'vuex'
+
 
 const FilePond = vueFilePond(FilePondPluginValidateType)
 
@@ -413,9 +414,15 @@ export default {
               return !this.categoria || (i.categoria === this.categoria);
             })
         },
+
         ...mapGetters(
             'sesion', ['saludo']
         ),
+
+        ...mapState(
+            'sesion', ['usuario']
+        ),
+        
         //Errores registro
         erroresEmail: function(){
             let errores = []
