@@ -11,16 +11,11 @@
                     class="mx-auto"
                     max-width="400"
                     >
-                        <v-card-text class="font-weight-bold" style="font-size:20px"><i class="fa fa-chart-pie"></i> Prendas En Sistema</v-card-text>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Prendas Registradas: <strong style="color:#5E8ACD">12</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Actualmente Publicadas: <strong style="color:#5E8ACD">5</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Limite de prendas publicadas: <strong style="color:#5E8ACD">7</strong></p>
-                        </div>
+                        <v-card-title>Total de prendas subidas</v-card-title>
+
+                        <v-card-text class="headline text-center font-weight-bold">
+                          {{ prendas.length }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
                 <v-col>
@@ -28,17 +23,11 @@
                     class="mx-auto"
                     max-width="400"
                     >
-                        <v-card-text class="font-weight-bold" style="font-size:20px"><i class="fa fa-chart-bar"></i> Reporte Semanal</v-card-text>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Vistas Totales: <strong style="color:#5E8ACD">165</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Total Me Gusta: <strong style="color:#5E8ACD">138</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p>Total No Me Gusta: <strong style="color:#5E8ACD">27</strong></p>
-                        </div>
-                        
+                        <v-card-title>Total de vistas</v-card-title>
+
+                        <v-card-text class="headline text-center font-weight-bold">
+                          {{ totalVistas }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
 
@@ -47,16 +36,11 @@
                     class="mx-auto"
                     max-width="400"
                     >
-                        <v-card-text class="font-weight-bold" style="font-size:20px;"><i class="fa fa-chart-area"></i> Prendas Por Categorias</v-card-text>
-                        <div class="row" style="padding:0px 25px">
-                        <p><i class="fa fa-shoe-prints" style="color:#D6D6D6"></i> Zapatos: <strong style="color:#5E8ACD">4</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p><i class="fa fa-shopping-bag" style="padding-right:10px; padding-left:2px; color:#D6D6D6"></i>Accesorios: <strong style="color:#5E8ACD">2</strong></p>
-                        </div>
-                        <div class="row" style="padding:0px 25px">
-                        <p><i class="fa fa-tshirt" style="padding-right:5px; color:#D6D6D6"></i>Blusas: <strong style="color:#5E8ACD">6</strong></p>
-                        </div>
+                        <v-card-title>Dislikes esta semana</v-card-title>
+
+                        <v-card-text class="headline text-center font-weight-bold">
+                          {{ totalDislikes }}
+                        </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
@@ -138,8 +122,9 @@ export default {
             publicadas : [],
             listaLikes : [],
             listaDislikes : [],
-            totalLikes : 13,
-            totalDislikes : 17,
+            totalLikes : 0,
+            totalDislikes : 0,
+            totalVistas: 0,
 
 
             headers: [
@@ -173,35 +158,43 @@ export default {
         ...mapState(['sesion'])
     },
     async mounted() {
-    this.prendas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}, {name: 'Camisa', likes: 0, dislikes: 10}];
-    this.publicadas = [{name: 'Sueter', likes: 3, dislikes: 2},{name: 'Pantalon', likes: 10, dislikes: 5}];
-//        let boutiqueId = 'bzTPm28OeUu9NghDhJln'//this.sesion.user.boutique
-//        this.listaLikes = []
-//        this.listaDislikes = []
-//        this.totalLikes = 0
-//        this.totalDislikes = 0
-//
-//        await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
-//            snapshot.forEach(doc=>{
-//                this.prendas.push(doc.data())
-//                if(doc.data().publicado){
-//                    this.publicadas.push(doc.data())
-//                }
-//
-//                db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
-//                    this.listaLikes.push({name: doc.data().name, likes: snapshot.size})
-//                })
-//                db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
-//                    this.listaDislikes.push({name: doc.data().name, dislikes: snapshot.size})
-//                })
-//            })
-//        })
-//        for (let i = 0; i<this.listaLikes.length; i++){
-//          this.totalLikes+=this.listaLikes[i].likes;
-//        }
-//        for (let i = 0; i<this.listaDislikes.length; i++){
-//          this.totalDislikes+=this.listaDislikes[i].dislikes;
-//        }
+        console.log(this.sesion.usuario.boutique)
+        let boutiqueId = this.sesion.usuario.boutique
+        this.listaLikes = []
+        this.listaDislikes = []
+        this.totalLikes = 0
+        this.totalDislikes = 0
+
+        try{
+            await db.collection('prendas').where('boutique','==',boutiqueId).get().then( snapshot =>{
+                snapshot.forEach(doc=>{
+                    this.prendas.push(doc.data())
+                    if(doc.data().publicado){
+                        this.publicadas.push(doc.data())
+                    }
+
+                    db.collectionGroup('like').where('id','==',doc.data().id).get().then( snapshot=>{
+                        this.listaLikes.push({name: doc.data().nombre, likes: snapshot.size})
+                        this.totalLikes+=snapshot.size
+                        this.totalVistas+=snapshot.size
+                    })
+
+
+                    db.collectionGroup('dislike').where('id','==',doc.data().id).get().then( snapshot=>{
+                        this.listaDislikes.push({name: doc.data().nombre, dislikes: snapshot.size})
+                        this.totalDislikes+=snapshot.size
+                        this.totalVistas+=snapshot.size
+                    })
+                })
+            })
+        }
+        catch(e){
+         console.log(e.message)
+        }
+        finally{
+
+        }
+
     }
 }
 </script>

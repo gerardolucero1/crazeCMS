@@ -25,11 +25,13 @@ var firebaseConfig = {
     measurementId: "G-TCL8FH6GTW"
 };
 
-firebase.initializeApp(firebaseConfig)
+let defaultApp = firebase.initializeApp(firebaseConfig)
+let secondApp = firebase.initializeApp(firebaseConfig, "second")
 
-const auth = firebase.auth()
-const db = firebase.firestore()
-const storage = firebase.storage()
-const functions = firebase.functions()
+const auth = defaultApp.auth()
+const db = defaultApp.firestore()
+const storage = defaultApp.storage()
+const functions = defaultApp.functions()
+const secondAuth = secondApp.auth()
 
-export { firebase, auth, db, storage, functions }
+export { firebase, auth, db, storage, functions, secondAuth }

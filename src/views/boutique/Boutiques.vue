@@ -75,6 +75,19 @@
                             id="logo"
                             v-model="nuevaBoutique.logo"
                         ></v-text-field>
+
+                        <v-text-field
+                            name="longitudBoutique"
+                            label="Longitud"
+                            id="longitudBoutique"
+                            v-model="nuevaBoutique.longitud"
+                        ></v-text-field>
+                        <v-text-field
+                            name="latitudBoutique"
+                            label="Latitud"
+                            id="latitudBoutique"
+                            v-model="nuevaBoutique.latitud"
+                        ></v-text-field>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
@@ -184,7 +197,7 @@ export default {
             finally{
                 this.modalBoutique = false
             }
-            
+
         },
 
         async obtenerBoutiques(){
@@ -193,12 +206,12 @@ export default {
                 let data = boutiques.docs.map(doc => doc.data())
 
                 this.rellenarBoutiques(data)
-                
+
             } catch (e) {
-            
+
             }
             finally{
-                
+
             }
         },
     }

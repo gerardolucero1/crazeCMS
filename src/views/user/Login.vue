@@ -53,7 +53,43 @@
                 </v-card-text>
                 <v-card-text>
                     <v-layout justify-end>
-                        <v-btn >Olvidaste tu Contraseña?</v-btn>
+                        <v-dialog v-model="modalReset" persistent max-width="600px">
+                            <template v-slot:activator="{ on }">
+                                <v-btn color="primary" dark v-on="on">Olvidaste tu contraseña?</v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="headline grey lighten-2" primary-title>
+                                    <span class="headline">Olvido de Contraseña</span>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    <v-container>
+                                        <v-row>
+                                            <v-col cols="12" md="12">
+
+                                                <v-text-field
+                                                    name="email"
+                                                    label="Correo de Recuperacion"
+                                                    id="email"
+                                                    autofocus
+                                                    v-model="resetEmail"
+                                                    :error-messages="erroresEmail"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                </v-card-text>
+                                <v-card-actions justify-center>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" text @click="modelReset = false">
+                                        Cancelar
+                                    </v-btn>
+                                    <v-btn color="primary" text @click="olvidoPassword">
+                                        Enviar
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                         <v-btn @click="ingresar('email')" :disabled="$v.formulario.$invalid" color="secondary">Ingresar</v-btn>
                     </v-layout>
                 </v-card-text>
@@ -66,6 +102,7 @@
 import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
 import { mapMutations, mapGetters } from 'vuex'
 import { auth, firebase } from '@/firebase'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'login',
@@ -75,7 +112,9 @@ export default {
                 email: '',
                 password: '',
             },
-            show: String
+            show: String,
+            modalReset: false,
+            resetEmail: '',
         }
 
     },
@@ -214,7 +253,25 @@ export default {
             finally{
                 this.ocultarOcupado()
             }
-        }
+        },
+        async olvidoPassword(){
+            auth.sendPasswordResetEmail(this.resetEmail).then(()=>{
+                Swal.fire({
+                    title: 'Correo Enviado!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                })
+            }).catch(function(error) {
+                Swal.fire({
+                    title: 'Ocurrio un Error',
+                    icon: 'failure',
+                    confirmButtonText: 'Ok'
+                })
+            }).
+            finally(()=>{
+                this.modalReset = false
+            });
+        },
     }
 }
 </script>
