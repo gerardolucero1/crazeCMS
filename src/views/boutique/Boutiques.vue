@@ -97,6 +97,7 @@ import { db } from '@/firebase'
 export default {
     data(){
         return{
+            on: '',
             modalBoutique: false,
             nuevaBoutique: {
                 nombre: '',
