@@ -15,7 +15,7 @@ var firebaseConfig = {
     // messagingSenderId: "399502940312",
     // appId: "1:399502940312:web:8655f232b9db204a8a18ed",
     // measurementId: "G-V0ZLYP6D0N"
-    apiKey: "AIzaSyB-Y8DHYC5ki4EKBojAfalAGYFPCuHaAFU",
+    apiKey: "AIzaSyCrRwgXUZ2WTTuOnCQifsfaNX_zdlrmpVc",
     authDomain: "craze-71d6b.firebaseapp.com",
     databaseURL: "https://craze-71d6b.firebaseio.com",
     projectId: "craze-71d6b",

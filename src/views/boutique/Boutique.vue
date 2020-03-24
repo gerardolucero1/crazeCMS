@@ -7,6 +7,7 @@
                         <v-dialog v-model="modalBoutique" persistent max-width="600px">
                             <template v-slot:activator="{ on }">
                                 <v-btn color="primary" dark v-on="on">Editar Perfil Boutique</v-btn>
+
                             </template>
                             <v-card>
                                 <v-card-title class="headline grey lighten-2" primary-title>
@@ -121,7 +122,9 @@
                             </v-card-actions>
                             </v-card>
                         </v-dialog>
-
+                        <router-link :to="{ name: 'caja', params: {id: boutique.id}}" class="link" style="margin-left:10px">
+                            <v-btn color="primary" dark>Caja</v-btn>
+                        </router-link>
                         <v-card class="elevation-2 ma-3">
                             <v-img :src="boutique.logo" min-height= "300px" max-height= "600px">
 
@@ -422,7 +425,7 @@ export default {
         ...mapState(
             'sesion', ['usuario']
         ),
-        
+
         //Errores registro
         erroresEmail: function(){
             let errores = []

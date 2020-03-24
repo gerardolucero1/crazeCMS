@@ -86,10 +86,10 @@ const routes = [{
         }
     },
     {
-        path: '/user/caja',
+        path: '/caja/:id',
         name: 'caja',
         component: () =>
-            import ( /* webpackChunkName: "profile" */ '../views/user/caja.vue'),
+            import ( /* webpackChunkName: "profile" */ '../views/caja/caja.vue'),
         meta: {
             autenticado: true,
         }
