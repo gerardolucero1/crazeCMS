@@ -17,7 +17,8 @@
                   <v-card-text>
                       <v-container>
                           <v-row>
-                            <h2 >Total del ultimo cierre: {{sumaUltimo}}  Total actual: {{sumaApertura}}</h2>
+                            <h2>Total del ultimo cierre: {{sumaUltimo}}  Total actual: {{sumaApertura}}</h2>
+                            <h3 style="color:red" >{{discrepanciaBilletes}}</h3>
                           </v-row>
                           <v-row>
                             <v-col style="margin:25px">
@@ -411,7 +412,6 @@
                                     <v-icon
                                         small
                                         class="mr-2"
-
                                     >
                                     remove_red_eye
                                     </v-icon>
@@ -426,9 +426,40 @@
                     </v-data-table>
                 </v-card>
                 <h2>Subtotal: {{sumaCarro}}</h2>
-                <v-btn color="primary" dark @click="cobrarCarro">
-                    Cobrar
-                </v-btn>
+                <v-dialog v-if="cajaAbierta" v-model="modalCobrar" persistent max-width="600px">
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary" dark v-on="on" >Cobrar</v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline grey lighten-2" primary-title>
+                          <span class="headline">Cobrar</span>
+                      </v-card-title>
+
+                      <v-card-text>
+                        <v-container>
+                          <v-row>
+                            <h2>Subtotal: {{sumaCarro}}</h2>
+                          </v-row>
+                          <v-row>
+                            <v-select
+                              :items="formaRecibo"
+                              label="Forma del Recibo"
+                              v-model="modoRecibo"
+                            ></v-select>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                      <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="primary" text @click="modalCobrar = false">
+                              Cancel
+                          </v-btn>
+                          <v-btn color="primary" dark @click="cobrarCarro">
+                              Cobrar
+                          </v-btn>
+                      </v-card-actions>
+                  </v-card>
+                </v-dialog>
             </v-col>
           </v-container>
           <v-container v-if="!cajaAbierta">
@@ -455,7 +486,6 @@
       data(){
           return{
             cajaAbierta: false,
-
             ultimaApertura: {},
             ultimoCierre: {},
             sumaCarro: 0,
@@ -465,6 +495,7 @@
             sumaActual: 0,
 
             modalAbrir: false,
+            discrepanciaBilletes: "",
             abrirCaja: {
               mpesos: 0, //1000
               dpesos: 0, //500
@@ -509,6 +540,9 @@
               veinteCentavos: 0,
             },
 
+            modalCobrar: false,
+            formaRecibo: ['completa', 'ticket'],
+            modoRecibo: '',
             carro: [],
 
             search: '',
@@ -891,7 +925,8 @@
 
           if(this.cajaAbierta){
             this.transferirCaja(responseCaja.data(), this.actualCaja)
-            this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+            this.transferirCaja(responseCaja.data(), this.abrirCaja)
+            this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
           }
 
           if(responseBoutique.exists){
@@ -1009,18 +1044,11 @@
           },
 
           async transferirCaja(fuente, destino){
-            destino.mpesos= fuente.mpesos
-            destino.dpesos= fuente.dpesos
-            destino.ccpesos= fuente.ccpesos
-            destino.cpesos= fuente.cpesos
-            destino.lpesos= fuente.lpesos
-            destino.xxpesos= fuente.xxpesos
-            destino.xpesos= fuente.xpesos
-            destino.vpesos= fuente.vpesos
-            destino.iipesos= fuente.iipesos
-            destino.ipesos= fuente.ipesos
-            destino.medioPeso= fuente.medioPeso
-            destino.veinteCentavos= fuente.veinteCentavos
+            for( var el in fuente ) {
+              if( fuente.hasOwnProperty( el )) {
+                destino[el] = fuente[el]
+              }
+            }
           },
 
           async sumaCaja(obj){
@@ -1057,6 +1085,55 @@
 
           //apertura caja
           async subtotalApertura(){
+            let ejemplos = ''
+            this.discrepanciaBilletes = ''
+            for( var el in this.abrirCaja ) {
+              if( this.abrirCaja.hasOwnProperty( el ) && el!="fecha" && el!="activa" && (parseInt(this.abrirCaja[el]) != parseInt(this.ultimoCierre[el])) ) {
+                switch(el){
+                  case 'mpesos':
+                    ejemplos+= ' 1000 pesos'
+                  break;
+                  case 'dpesos':
+                    ejemplos+= ' 500 pesos'
+                  break;
+                  case 'ccpesos':
+                    ejemplos+= ' 200 pesos'
+                  break;
+                  case 'cpesos':
+                    ejemplos+= ' 100 pesos'
+                  break;
+                  case 'lpesos':
+                    ejemplos+= ' 50 pesos'
+                  break;
+                  case 'xxpesos':
+                    ejemplos+= ' 20 pesos'
+                  break;
+                  case 'xpesos':
+                    ejemplos+= ' 10 pesos'
+                  break;
+                  case 'vpesos':
+                    ejemplos+= ' 5 pesos'
+                  break;
+                  case 'iipesos':
+                    ejemplos+= ' 2 pesos'
+                  break;
+                  case 'ipesos':
+                    ejemplos+= ' 1 pesos'
+                  break;
+                  case 'medioPeso':
+                    ejemplos+= ' .50 pesos'
+                  break;
+                  case 'veinteCentavos':
+                    ejemplos+= ' .20 pesos'
+                  break;
+                }
+              }
+            }
+            if(ejemplos!=''){
+              let regex = /s /g
+              ejemplos = ejemplos.replace(regex, 's, ')
+              this.discrepanciaBilletes='Los siguientes campos no coinciden con el cierre anterior: '+ejemplos
+            }
             this.sumaCaja(this.abrirCaja).then((resultado)=>{
               //console.log(resultado)
               this.sumaApertura = resultado
@@ -1072,7 +1149,7 @@
 
           async checarApertura(){
               try{
-                  this.$options.contadorApertura = setInterval(this.subtotalApertura, 1000);
+                  this.$options.contadorApertura = setInterval(this.subtotalApertura, 100);
               }
               catch(error){
                   console.log(error)
@@ -1088,7 +1165,7 @@
           async iniciarCaja(){
             try{
               this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
-              this.transferirCaja(this.abrirCaja,this.actualCaja)
+
               clearInterval(this.$options.contadorApertura);
               this.parseCaja(this.abrirCaja)
               this.abrirCaja.fecha= new Date()
@@ -1096,7 +1173,11 @@
 
               let id = this.$route.params.id
 
-              await db.collection('boutiques/'+id+'/aperturas').doc().set(this.abrirCaja)
+              await db.collection('boutiques/'+id+'/aperturas').add(this.abrirCaja)
+                .then((doc)=>{
+                  this.abrirCaja.actualId = doc.id
+                })
+
               await db.collection('boutiques/'+id+'/actual').doc('caja').set(this.abrirCaja)
 
               this.sumaActual = this.sumaApertura
@@ -1105,7 +1186,9 @@
 
               this.modalAbrir = false
 
-              this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+              this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
+
+              this.transferirCaja(this.abrirCaja,this.actualCaja)
 
             }
             catch(error){
@@ -1158,15 +1241,26 @@
 
           async cobrarCarro(){
             clearInterval(this.$options.contadorCarro);
+            let id  = this.$route.params.id
+            let obj = {}
+
+            obj.lista = this.carro
+            obj.total = this.sumaCarro
+            obj.aperturaId = this.abrirCaja.actualId
+            obj.modoRecibo = this.modoRecibo
+            obj.fecha= new Date()
+
+            await db.collection('boutiques/'+id+'/pagos').doc().set(obj)
 
             this.limpiarCarro()
-            this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+            this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
+            this.modalCobrar = false
           },
 
           async checarCierre(){
               try{
                 this.transferirCaja(this.actualCaja,this.cerrarCaja)
-                this.$options.contadorCierre = setInterval(this.subtotalCierre, 1000);
+                this.$options.contadorCierre = setInterval(this.subtotalCierre, 100);
               }
               catch(error){
                   console.log(error)
@@ -1196,6 +1290,8 @@
 
               this.sumaActual = 0
 
+              this.transferirCaja(this.cerrarCaja,this.ultimoCierre)
+
               this.cajaAbierta= false
 
               this.modalCerrar = false
@@ -1206,12 +1302,7 @@
               this.mostrarError('Ocurrio un error desconocido registrando el cierre de caja')
             }
             finally{
-              this.inicializar().then((resultado)=>{
-                this.abrirCaja = resultado
-              })
-              this.inicializar().then((resultado)=>{
-                this.cerrarCaja = resultado
-              })
+
               this.ocultarOcupado()
             }
           },
