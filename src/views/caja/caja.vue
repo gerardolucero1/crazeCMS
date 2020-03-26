@@ -6,7 +6,7 @@
 <!-- ABRIR CAJA -->
           <v-dialog v-if="!cajaAbierta" v-model="modalAbrir" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                  <v-btn color="primary" dark v-on="on">Abrir Caja</v-btn>
+                  <v-btn color="primary" dark v-on="on" @click="checarApertura">Abrir Caja</v-btn>
 
               </template>
               <v-card >
@@ -17,6 +17,9 @@
                   <v-card-text>
                       <v-container>
                           <v-row>
+                            <h2 >Total del ultimo cierre: {{sumaUltimo}}  Total actual: {{sumaApertura}}</h2>
+                          </v-row>
+                          <v-row>
                             <v-col style="margin:25px">
                                 <h3>Billetes</h3>
                                 <v-row>
@@ -25,7 +28,7 @@
                                       @blur="$v.abrirCaja.mpesos.$touch()"
                                       name="1000 pesos"
                                       label="1000 pesos"
-                                      id="mpesos"
+                                      type="number" id="mpesos"
                                       v-model="abrirCaja.mpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -35,7 +38,7 @@
                                       @blur="$v.abrirCaja.dpesos.$touch()"
                                       name="500 pesos"
                                       label="500 pesos"
-                                      id="dpesos"
+                                      type="number" id="dpesos"
                                       v-model="abrirCaja.dpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -45,7 +48,7 @@
                                       @blur="$v.abrirCaja.ccpesos.$touch()"
                                       name="200 pesos"
                                       label="200 pesos"
-                                      id="ccpesos"
+                                      type="number" id="ccpesos"
                                       v-model="abrirCaja.ccpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -55,7 +58,7 @@
                                       @blur="$v.abrirCaja.cpesos.$touch()"
                                       name="100 pesos"
                                       label="100 pesos"
-                                      id="cpesos"
+                                      type="number" id="cpesos"
                                       v-model="abrirCaja.cpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -65,7 +68,7 @@
                                       @blur="$v.abrirCaja.lpesos.$touch()"
                                       name="50 pesos"
                                       label="50 pesos"
-                                      id="lpesos"
+                                      type="number" id="lpesos"
                                       v-model="abrirCaja.lpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -75,7 +78,7 @@
                                       @blur="$v.abrirCaja.xxpesos.$touch()"
                                       name="20 pesos"
                                       label="20 pesos"
-                                      id="xxpesos"
+                                      type="number" id="xxpesos"
                                       v-model="abrirCaja.xxpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -89,7 +92,7 @@
                                       @blur="$v.abrirCaja.xpesos.$touch()"
                                       name="10 pesos"
                                       label="10 pesos"
-                                      id="xpesos"
+                                      type="number" id="xpesos"
                                       v-model="abrirCaja.xpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -99,7 +102,7 @@
                                       @blur="$v.abrirCaja.vpesos.$touch()"
                                       name="5 pesos"
                                       label="5 pesos"
-                                      id="vpesos"
+                                      type="number" id="vpesos"
                                       v-model="abrirCaja.vpesos"
                                   ></v-text-field>
                                 </v-row>
@@ -109,7 +112,7 @@
                                       @blur="$v.abrirCaja.iipesos.$touch()"
                                       name="2 pesos"
                                       label="2 pesos"
-                                      id="iipesos"
+                                      type="number" id="iipesos"
                                       v-model="abrirCaja.iipesos"
                                   ></v-text-field>
                                 </v-row>
@@ -119,7 +122,7 @@
                                       @blur="$v.abrirCaja.ipesos.$touch()"
                                       name="1 pesos"
                                       label="1 pesos"
-                                      id="ipesos"
+                                      type="number" id="ipesos"
                                       v-model="abrirCaja.ipesos"
                                   ></v-text-field>
                                 </v-row>
@@ -129,7 +132,7 @@
                                       @blur="$v.abrirCaja.medioPeso.$touch()"
                                       name=".50 pesos"
                                       label=".50 pesos"
-                                      id="medioPeso"
+                                      type="number" id="medioPeso"
                                       v-model="abrirCaja.medioPeso"
                                   ></v-text-field>
                                 </v-row>
@@ -139,7 +142,7 @@
                                       @blur="$v.abrirCaja.veinteCentavos.$touch()"
                                       name=".20 pesos"
                                       label=".20 pesos"
-                                      id="veinteCentavos"
+                                      type="number" id="veinteCentavos"
                                       v-model="abrirCaja.veinteCentavos"
                                   ></v-text-field>
                                 </v-row>
@@ -149,7 +152,7 @@
                   </v-card-text>
                   <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="primary" text @click="modalAbrir = false">
+                      <v-btn color="primary" text @click="cancelarApertura">
                           Cancel
                       </v-btn>
                       <v-btn color="primary" text @click="iniciarCaja">
@@ -161,7 +164,7 @@
 <!-- CERRAR CAJA-->
           <v-dialog v-if="cajaAbierta" v-model="modalCerrar" persistent max-width="600px">
               <template v-slot:activator="{ on }">
-                  <v-btn color="primary" dark v-on="on">Cerrar Caja</v-btn>
+                  <v-btn color="primary" dark v-on="on" @click="checarCierre">Cerrar Caja</v-btn>
               </template>
               <v-card>
                   <v-card-title class="headline grey lighten-2" primary-title>
@@ -171,6 +174,9 @@
                   <v-card-text>
                     <v-container>
                         <v-row>
+                          <h2 >Total de la apertura: {{sumaApertura}}  Total actual: {{sumaCierre}}</h2>
+                        </v-row>
+                        <v-row>
                           <v-col style="margin:25px">
                               <h3>Billetes</h3>
                               <v-row>
@@ -179,7 +185,7 @@
                                     @blur="$v.cerrarCaja.mpesos.$touch()"
                                     name="1000 pesos"
                                     label="1000 pesos"
-                                    id="mpesos"
+                                    type="number" id="mpesos"
                                     v-model="cerrarCaja.mpesos"
                                 ></v-text-field>
                               </v-row>
@@ -189,7 +195,7 @@
                                     @blur="$v.cerrarCaja.dpesos.$touch()"
                                     name="500 pesos"
                                     label="500 pesos"
-                                    id="dpesos"
+                                    type="number" id="dpesos"
                                     v-model="cerrarCaja.dpesos"
                                 ></v-text-field>
                               </v-row>
@@ -199,7 +205,7 @@
                                     @blur="$v.cerrarCaja.ccpesos.$touch()"
                                     name="200 pesos"
                                     label="200 pesos"
-                                    id="ccpesos"
+                                    type="number" id="ccpesos"
                                     v-model="cerrarCaja.ccpesos"
                                 ></v-text-field>
                               </v-row>
@@ -209,7 +215,7 @@
                                     @blur="$v.cerrarCaja.cpesos.$touch()"
                                     name="100 pesos"
                                     label="100 pesos"
-                                    id="cpesos"
+                                    type="number" id="cpesos"
                                     v-model="cerrarCaja.cpesos"
                                 ></v-text-field>
                               </v-row>
@@ -219,7 +225,7 @@
                                     @blur="$v.cerrarCaja.lpesos.$touch()"
                                     name="50 pesos"
                                     label="50 pesos"
-                                    id="lpesos"
+                                    type="number" id="lpesos"
                                     v-model="cerrarCaja.lpesos"
                                 ></v-text-field>
                               </v-row>
@@ -229,7 +235,7 @@
                                     @blur="$v.cerrarCaja.xxpesos.$touch()"
                                     name="20 pesos"
                                     label="20 pesos"
-                                    id="xxpesos"
+                                    type="number" id="xxpesos"
                                     v-model="cerrarCaja.xxpesos"
                                 ></v-text-field>
                               </v-row>
@@ -243,7 +249,7 @@
                                     @blur="$v.cerrarCaja.xpesos.$touch()"
                                     name="10 pesos"
                                     label="10 pesos"
-                                    id="xpesos"
+                                    type="number" id="xpesos"
                                     v-model="cerrarCaja.xpesos"
                                 ></v-text-field>
                               </v-row>
@@ -253,7 +259,7 @@
                                     @blur="$v.cerrarCaja.vpesos.$touch()"
                                     name="5 pesos"
                                     label="5 pesos"
-                                    id="vpesos"
+                                    type="number" id="vpesos"
                                     v-model="cerrarCaja.vpesos"
                                 ></v-text-field>
                               </v-row>
@@ -263,7 +269,7 @@
                                     @blur="$v.cerrarCaja.iipesos.$touch()"
                                     name="2 pesos"
                                     label="2 pesos"
-                                    id="iipesos"
+                                    type="number" id="iipesos"
                                     v-model="cerrarCaja.iipesos"
                                 ></v-text-field>
                               </v-row>
@@ -273,7 +279,7 @@
                                     @blur="$v.cerrarCaja.ipesos.$touch()"
                                     name="1 pesos"
                                     label="1 pesos"
-                                    id="ipesos"
+                                    type="number" id="ipesos"
                                     v-model="cerrarCaja.ipesos"
                                 ></v-text-field>
                               </v-row>
@@ -283,7 +289,7 @@
                                     @blur="$v.cerrarCaja.medioPeso.$touch()"
                                     name=".50 pesos"
                                     label=".50 pesos"
-                                    id="medioPeso"
+                                    type="number" id="medioPeso"
                                     v-model="cerrarCaja.medioPeso"
                                 ></v-text-field>
                               </v-row>
@@ -293,7 +299,7 @@
                                     @blur="$v.cerrarCaja.veinteCentavos.$touch()"
                                     name=".20 pesos"
                                     label=".20 pesos"
-                                    id="veinteCentavos"
+                                    type="number" id="veinteCentavos"
                                     v-model="cerrarCaja.veinteCentavos"
                                 ></v-text-field>
                               </v-row>
@@ -314,7 +320,7 @@
           </v-dialog>
           <v-container v-if="cajaAbierta">
             <v-col>
-                <v-card>
+                <v-card style="margin-bottom: 20px">
                     <v-card-title>
                         Prendas
                         <v-spacer></v-spacer>
@@ -366,7 +372,7 @@
                 </v-card>
 
 
-                <v-card>
+                <v-card style="margin-bottom: 20px">
                     <v-card-title>
                         Carro
                         <v-spacer></v-spacer>
@@ -419,6 +425,10 @@
                         </template>
                     </v-data-table>
                 </v-card>
+                <h2>Subtotal: {{sumaCarro}}</h2>
+                <v-btn color="primary" dark @click="cobrarCarro">
+                    Cobrar
+                </v-btn>
             </v-col>
           </v-container>
           <v-container v-if="!cajaAbierta">
@@ -446,20 +456,28 @@
           return{
             cajaAbierta: false,
 
+            ultimaApertura: {},
+            ultimoCierre: {},
+            sumaCarro: 0,
+            sumaUltimo: 0,
+            sumaApertura: 0,
+            sumaCierre: 0,
+            sumaActual: 0,
+
             modalAbrir: false,
             abrirCaja: {
-              mpesos: 0,
-              dpesos: 0,
-              ccpesos: 0,
-              cpesos: 0,
-              lpesos: 0,
-              xxpesos: 0,
-              xpesos: 0,
-              vpesos: 0,
-              iipesos: 0,
-              ipesos: 0,
-              medioPeso: 0,
-              veinteCentavos: 0,
+              mpesos: 0, //1000
+              dpesos: 0, //500
+              ccpesos: 0, //200
+              cpesos: 0,  //100
+              lpesos: 0,  //50
+              xxpesos: 0, //20
+              xpesos: 0, //10
+              vpesos: 0, //5
+              iipesos: 0, //2
+              ipesos: 0, //1
+              medioPeso: 0, //.50
+              veinteCentavos: 0, //.20,
             },
             actualCaja: {
               mpesos: 0,
@@ -507,6 +525,7 @@
                 },
                 { text: 'Marca', value: 'marca' },
                 { text: 'Tallas', value: 'tallas' },
+                { text: 'Precio', value: 'precio' },
                 { text: 'Opciones', value: 'action', sortable: false },
                 { text: 'Estatus', value: 'status', sortable: false },
             ],
@@ -860,12 +879,24 @@
           },
       },
       async mounted(){
-          let id = this.$route.params.id
-          let response = await db.collection('boutiques').doc(id).get()
+          clearInterval(this.$options.contadorApertura);
+          clearInterval(this.$options.contadorCierre);
 
-          if(response.exists){
-              this.boutique = response.data();
-              this.newBoutique = response.data();
+          let id = this.$route.params.id
+          let responseBoutique = await db.collection('boutiques').doc(id).get()
+          let responseCaja = await db.collection('boutiques/'+id+'/actual').doc('caja').get()
+          this.cajaAbierta = responseCaja.data().activa
+
+          this.inicializar(this.abrirCaja)
+
+          if(this.cajaAbierta){
+            this.transferirCaja(responseCaja.data(), this.actualCaja)
+            this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+          }
+
+          if(responseBoutique.exists){
+              this.boutique = responseBoutique.data();
+              this.newBoutique = responseBoutique.data();
           }
 
           db.collection('categorias').onSnapshot(response => {
@@ -886,6 +917,67 @@
                           })
                       })
           }
+
+          await db.collection('boutiques/'+id+'/aperturas')
+            .orderBy('fecha', 'desc') // Order documents by added_at field in descending order
+            .limit(1)
+            .get()
+            .then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                if(doc.exists){
+                  this.ultimaApertura = doc.data()
+                }
+              })
+            })
+
+          await db.collection('boutiques/'+id+'/cierres')
+            .orderBy('fecha', 'desc') // Order documents by added_at field in descending order
+            .limit(1)
+            .get()
+            .then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                if(doc.exists){
+                  this.ultimoCierre = doc.data()
+                }
+              })
+            })
+
+          if (this.ultimaApertura.fecha && this.ultimoCierre.fecha){
+            console.log('existen')
+            if(this.ultimaApertura.fecha.toDate() < this.ultimoCierre.fecha.toDate()){
+              console.log('todo funciona correctamente')
+              this.sumaCaja(this.ultimoCierre).then((result)=>{
+                this.sumaUltimo = result
+              })
+            } else {
+              this.mostrarAdvertencia('el ultimo cierre es antes de la ultima apertura')
+              this.sumaCaja(this.ultimaApertura).then((result)=>{
+                this.sumaUltimo = result
+              })
+            }
+          } else {
+            if (!this.ultimaApertura.fecha && !this.ultimoCierre.fecha){
+              this.mostrarAdvertencia('primera apertura')
+              this.sumaUltimo=0
+            }
+            if (!this.ultimaApertura.fecha && this.ultimoCierre.fecha){
+              this.mostrarAdvertencia('no se registro la primera apertura')
+              this.sumaCaja(this.ultimoCierre).then((result)=>{
+                this.sumaUltimo = result
+              })
+            }
+            if (this.ultimaApertura.fecha && !this.ultimoCierre.fecha){
+              this.mostrarAdvertencia('no se cerro la primera apertura')
+              this.sumaCaja(this.ultimaApertura).then((result)=>{
+                this.sumaUltimo = result
+              })
+            }
+          }
+      },
+      destroyed() {
+        clearInterval(this.$options.contadorCarro);
+        clearInterval(this.$options.contadorApertura);
+        clearInterval(this.$options.contadorCierre);
       },
       methods: {
           ...mapMutations([
@@ -899,42 +991,130 @@
               'sesion', ['cerrarSesion']
           ),
 
-          async iniciarCaja(){
+          async inicializar(){
+            let caja = {}
+            caja.mpesos= 0
+            caja.dpesos= 0
+            caja.ccpesos= 0
+            caja.cpesos= 0
+            caja.lpesos= 0
+            caja.xxpesos= 0
+            caja.xpesos= 0
+            caja.vpesos= 0
+            caja.iipesos= 0
+            caja.ipesos= 0
+            caja.medioPeso= 0
+            caja.veinteCentavos= 0
+            return caja
+          },
+
+          async transferirCaja(fuente, destino){
+            destino.mpesos= fuente.mpesos
+            destino.dpesos= fuente.dpesos
+            destino.ccpesos= fuente.ccpesos
+            destino.cpesos= fuente.cpesos
+            destino.lpesos= fuente.lpesos
+            destino.xxpesos= fuente.xxpesos
+            destino.xpesos= fuente.xpesos
+            destino.vpesos= fuente.vpesos
+            destino.iipesos= fuente.iipesos
+            destino.ipesos= fuente.ipesos
+            destino.medioPeso= fuente.medioPeso
+            destino.veinteCentavos= fuente.veinteCentavos
+          },
+
+          async sumaCaja(obj){
+            var sum = 0;
+            sum = (parseInt(obj.mpesos)*1000) + (parseInt(obj.dpesos)*500) + (parseInt(obj.ccpesos)*200) + (parseInt(obj.cpesos)*100) + (parseInt(obj.lpesos)*50) + (parseInt(obj.xxpesos)*20) + (parseInt(obj.xpesos)*10) + (parseInt(obj.vpesos)*5) + (parseInt(obj.iipesos)*2) + parseInt(obj.ipesos) + (parseInt(obj.medioPeso)*.5) + (parseInt(obj.veinteCentavos)*.2)
+            //for( var el in obj ) {
+            //  if( obj.hasOwnProperty( el ) ) {
+            //    sum += parseInt( obj[el] );
+            //  }
+            //}
+            return sum;
+          },
+
+          async parseCaja(obj){
+            for( var el in obj ) {
+              if( obj.hasOwnProperty( el ) ) {
+                obj[el] = parseInt( obj[el] );
+              }
+            }
+          },
+
+          //calculo subtotal
+          //carro
+          async subtotalCarro(){
+            let subtotal = 0
+            if (this.carro.length>0){
+              this.carro.forEach((item)=>{
+                subtotal+=parseFloat(item.precio)
+              })
+            }
+            console.log(subtotal)
+            this.sumaCarro = subtotal
+          },
+
+          //apertura caja
+          async subtotalApertura(){
+            this.sumaCaja(this.abrirCaja).then((resultado)=>{
+              //console.log(resultado)
+              this.sumaApertura = resultado
+            })
+          },
+
+          //cierra caja
+          async subtotalCierre(){
+            this.sumaCaja(this.cerrarCaja).then((resultado)=>{
+              this.sumaCierre = resultado
+            })
+          },
+
+          async checarApertura(){
               try{
-                  this.cajaAbierta= true
-                  let id = this.$route.params.id
-                  let response = await db.collection('boutiques').doc(id).get();
-                  this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
-
-
-
-                  //let credencial = await secondAuth.createUserWithEmailAndPassword(this.formulario.email, this.formulario.password)
-                  //let uid = credencial.user.uid
-
-                  //await this.guardarUsuario(uid)
-
-                  //await secondAuth.currentUser.sendEmailVerification()
-
-                  //await secondAuth.signOut();
-
-                  //this.$router.push({ name: 'verificacion-email' })
+                  this.$options.contadorApertura = setInterval(this.subtotalApertura, 1000);
               }
               catch(error){
                   console.log(error)
-                  switch (error.code) {
-                      case 'auth/email-already-in-use':
-                          this.mostrarAdvertencia('Ya se ha hecho una apertura de caja sin cerrar')
-                          break;
+                  this.mostrarError('Ocurrio un error desconocido abriendo la caja')
+              }
+          },
 
-                      default:
-                          this.mostrarError('Ocurrio un error registrando tu cuenta')
-                          break;
-                  }
-              }
-              finally{
-                  this.ocultarOcupado()
-                  this.modalAbrir = false
-              }
+          async cancelarApertura(){
+            clearInterval(this.$options.contadorApertura);
+            this.modalAbrir = false
+          },
+
+          async iniciarCaja(){
+            try{
+              this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
+              this.transferirCaja(this.abrirCaja,this.actualCaja)
+              clearInterval(this.$options.contadorApertura);
+              this.parseCaja(this.abrirCaja)
+              this.abrirCaja.fecha= new Date()
+              this.abrirCaja.activa= true
+
+              let id = this.$route.params.id
+
+              await db.collection('boutiques/'+id+'/aperturas').doc().set(this.abrirCaja)
+              await db.collection('boutiques/'+id+'/actual').doc('caja').set(this.abrirCaja)
+
+              this.sumaActual = this.sumaApertura
+
+              this.cajaAbierta= true
+
+              this.modalAbrir = false
+
+              this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+
+            }
+            catch(error){
+              console.log(error)
+              this.mostrarError('Ocurrio un error desconocido registrando la apertura la caja')
+            }
+            finally{
+              this.ocultarOcupado()
+            }
           },
 
           async agregarCarro(item){
@@ -976,42 +1156,64 @@
             this.carro = this.carro.filter(function(value, index, arr){ return false })
           },
 
-          async terminarCaja(){
+          async cobrarCarro(){
+            clearInterval(this.$options.contadorCarro);
+
+            this.limpiarCarro()
+            this.$options.contadorCarro = setInterval(this.subtotalCarro, 1000);
+          },
+
+          async checarCierre(){
               try{
-                  this.cajaAbierta= false
-                  let id = this.$route.params.id
-                  let response = await db.collection('boutiques').doc(id).get();
-                  this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
-
-
-
-                  //let credencial = await secondAuth.createUserWithEmailAndPassword(this.formulario.email, this.formulario.password)
-                  //let uid = credencial.user.uid
-
-                  //await this.guardarUsuario(uid)
-
-                  //await secondAuth.currentUser.sendEmailVerification()
-
-                  //await secondAuth.signOut();
-
-                  //this.$router.push({ name: 'verificacion-email' })
+                this.transferirCaja(this.actualCaja,this.cerrarCaja)
+                this.$options.contadorCierre = setInterval(this.subtotalCierre, 1000);
               }
               catch(error){
                   console.log(error)
-                  switch (error.code) {
-                      case 'auth/email-already-in-use':
-                          this.mostrarAdvertencia('Ya se ha hecho una apertura de caja sin cerrar')
-                          break;
+                  this.mostrarError('Ocurrio un error desconocido abriendo la caja')
+              }
 
-                      default:
-                          this.mostrarError('Ocurrio un error registrando tu cuenta')
-                          break;
-                  }
-              }
-              finally{
-                  this.ocultarOcupado()
-                  this.modalCerrar = false
-              }
+          },
+
+          async cancelarCierre(){
+            clearInterval(this.$options.contadorCierre);
+            this.modalCerrar = false
+          },
+
+          async terminarCaja(){
+            try{
+              this.mostrarOcupado({ titulo: 'Creando registro', mensaje: 'Estamos registrando tus datos' })
+              clearInterval(this.$options.contadorCarro);
+              clearInterval(this.$options.contadorCierre);
+              this.parseCaja(this.cerrarCaja)
+              this.cerrarCaja.fecha= new Date()
+              this.cerrarCaja.activa = false
+
+              let id = this.$route.params.id
+
+              await db.collection('boutiques/'+id+'/cierres').doc().set(this.cerrarCaja)
+              await db.collection('boutiques/'+id+'/actual').doc('caja').set(this.cerrarCaja)
+
+              this.sumaActual = 0
+
+              this.cajaAbierta= false
+
+              this.modalCerrar = false
+
+            }
+            catch(error){
+              console.log(error)
+              this.mostrarError('Ocurrio un error desconocido registrando el cierre de caja')
+            }
+            finally{
+              this.inicializar().then((resultado)=>{
+                this.abrirCaja = resultado
+              })
+              this.inicializar().then((resultado)=>{
+                this.cerrarCaja = resultado
+              })
+              this.ocultarOcupado()
+            }
           },
       }
   }
