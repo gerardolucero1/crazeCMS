@@ -428,7 +428,7 @@
                 <h2>Subtotal: {{sumaCarro}}</h2>
                 <v-dialog v-if="cajaAbierta" v-model="modalCobrar" persistent max-width="600px">
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark v-on="on" >Cobrar</v-btn>
+                        <v-btn color="primary" dark v-on="on" @click="$v.ticket.$touch()" >Cobrar</v-btn>
                     </template>
                     <v-card>
                       <v-card-title class="headline grey lighten-2" primary-title>
@@ -443,7 +443,9 @@
                           <v-row>
                             <v-select
                               :items="formaRecibo"
+                              :error-messages="erroresTicket"
                               label="Forma del Recibo"
+                              item-value="modoRecibo"
                               v-model="modoRecibo"
                             ></v-select>
                           </v-row>
@@ -454,7 +456,7 @@
                           <v-btn color="primary" text @click="modalCobrar = false">
                               Cancel
                           </v-btn>
-                          <v-btn color="primary" dark @click="cobrarCarro">
+                          <v-btn color="primary" :disabled="modoRecibo==''" dark @click="cobrarCarro">
                               Cobrar
                           </v-btn>
                       </v-card-actions>
@@ -478,6 +480,7 @@
   import { auth, firebase, db , storage } from '@/firebase'
   import { mapState, mapMutations, mapActions } from 'vuex'
   import { required, minValue } from 'vuelidate/lib/validators'
+  import jsPDF from 'jspdf'
 
   export default {
       components: {
@@ -577,6 +580,9 @@
           }
       },
       validations:{
+        ticket: {
+          required,
+        },
         abrirCaja:  {
           mpesos:{
             minimo: (value) => parseInt(value) >= 0,
@@ -911,8 +917,22 @@
               }
             return errores
           },
+
+
+          //ticket
+          erroresTicket(){
+            let errores = []
+              if(!this.$v.ticket.$dirty){
+                return errores
+              }
+              if(this.modoRecibo == ''){
+                errores.push('Este campo es requerido')
+              }
+              return errores
+          }
       },
       async mounted(){
+
           clearInterval(this.$options.contadorApertura);
           clearInterval(this.$options.contadorCierre);
 
@@ -924,8 +944,8 @@
           this.inicializar(this.abrirCaja)
 
           if(this.cajaAbierta){
-            this.transferirCaja(responseCaja.data(), this.actualCaja)
-            this.transferirCaja(responseCaja.data(), this.abrirCaja)
+            this.transferirObj(responseCaja.data(), this.actualCaja)
+            this.transferirObj(responseCaja.data(), this.abrirCaja)
             this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
           }
 
@@ -978,9 +998,9 @@
             })
 
           if (this.ultimaApertura.fecha && this.ultimoCierre.fecha){
-            console.log('existen')
+            //console.log('existen')
             if(this.ultimaApertura.fecha.toDate() < this.ultimoCierre.fecha.toDate()){
-              console.log('todo funciona correctamente')
+              //console.log('todo funciona correctamente')
               this.sumaCaja(this.ultimoCierre).then((result)=>{
                 this.sumaUltimo = result
               })
@@ -1025,6 +1045,12 @@
           ...mapActions(
               'sesion', ['cerrarSesion']
           ),
+          createPDF (type, list) {
+            let pdfName = 'test';
+            var doc = new jsPDF();
+            doc.text("Hello World", 10, 10);
+            doc.output('dataurlnewwindow',{filename: 'ejemplo.pdf'});
+          },
 
           async inicializar(){
             let caja = {}
@@ -1043,7 +1069,7 @@
             return caja
           },
 
-          async transferirCaja(fuente, destino){
+          async transferirObj(fuente, destino){
             for( var el in fuente ) {
               if( fuente.hasOwnProperty( el )) {
                 destino[el] = fuente[el]
@@ -1079,7 +1105,7 @@
                 subtotal+=parseFloat(item.precio)
               })
             }
-            console.log(subtotal)
+            //console.log(subtotal)
             this.sumaCarro = subtotal
           },
 
@@ -1188,7 +1214,7 @@
 
               this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
 
-              this.transferirCaja(this.abrirCaja,this.actualCaja)
+              this.transferirObj(this.abrirCaja,this.actualCaja)
 
             }
             catch(error){
@@ -1231,7 +1257,7 @@
           },
 
           async removerCarro(item){
-          console.log(item)
+          //console.log(item)
             this.carro = this.carro.filter(function(value, index, arr){ return (value.carroId !=item.carroId )})
           },
 
@@ -1242,15 +1268,39 @@
           async cobrarCarro(){
             clearInterval(this.$options.contadorCarro);
             let id  = this.$route.params.id
-            let obj = {}
+            let bddObj = {}
+            let ticketObj = {}
 
-            obj.lista = this.carro
-            obj.total = this.sumaCarro
-            obj.aperturaId = this.abrirCaja.actualId
-            obj.modoRecibo = this.modoRecibo
-            obj.fecha= new Date()
+            bddObj.lista = this.carro
+            bddObj.total = this.sumaCarro
+            bddObj.aperturaId = this.abrirCaja.actualId
+            bddObj.modoRecibo = this.modoRecibo
+            bddObj.fecha= new Date()
 
-            await db.collection('boutiques/'+id+'/pagos').doc().set(obj)
+            bddObj.lista.forEach((item)=>{
+              if(ticketObj[item.id]>=1){
+                ticketObj[item.id]++
+              }else{
+                ticketObj[item.id]=1
+              }
+            })
+            //console.log(ticketObj)
+            bddObj.cantidades = ticketObj
+
+            for( var el in ticketObj ) {
+              if( ticketObj.hasOwnProperty( el ) ) {
+                let unidades = 0
+                console.log(el.toString())
+                let ref = await db.collection('prendas').doc(el.toString())
+                await ref.get().then((doc)=>{
+                  unidades = doc.data().unidades })
+                await ref.update({unidades : unidades - ticketObj[el]})
+              }
+            }
+
+            await db.collection('boutiques/'+id+'/pagos').doc().set(bddObj)
+
+            this.createPDF(bddObj.modoRecibo, bddObj.lista)
 
             this.limpiarCarro()
             this.$options.contadorCarro = setInterval(this.subtotalCarro, 100);
@@ -1259,7 +1309,7 @@
 
           async checarCierre(){
               try{
-                this.transferirCaja(this.actualCaja,this.cerrarCaja)
+                this.transferirObj(this.actualCaja,this.cerrarCaja)
                 this.$options.contadorCierre = setInterval(this.subtotalCierre, 100);
               }
               catch(error){
@@ -1290,7 +1340,7 @@
 
               this.sumaActual = 0
 
-              this.transferirCaja(this.cerrarCaja,this.ultimoCierre)
+              this.transferirObj(this.cerrarCaja,this.ultimoCierre)
 
               this.cajaAbierta= false
 

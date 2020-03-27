@@ -261,6 +261,15 @@
                             :search="search"
 
                         >
+                            <template v-slot:item.inventario="{ item }">
+                                  <v-text-field
+                                      @blur="actualizarEstatus(item)"
+                                      name="unidades"
+                                      label="unidades"
+                                      type="number" id="unidades"
+                                      v-model="item.unidades"
+                                  ></v-text-field>
+                            </template>
                             <template v-slot:item.action="{ item }">
                                 <v-flex>
                                     <router-link :to="{ name: 'prendas', params: { id: item.id } }">
@@ -340,6 +349,7 @@ export default {
                 { text: 'Tallas', value: 'tallas' },
                 { text: 'Likes', value: 'likes'},
                 { text: 'Dislikes', value: 'dislikes'},
+                { text: 'Inventario', value: 'inventario', sortable: false },
                 { text: 'Opciones', value: 'action', sortable: false },
                 { text: 'Estatus', value: 'status', sortable: false },
             ],
@@ -646,7 +656,7 @@ export default {
         async actualizarEstatus(item){
             try {
                 let response = await db.collection('prendas').doc(item.id)
-                response.update({ publicado: item.publicado })
+                response.update(item)
             } catch (e) {
                 console.log(e)
             }
